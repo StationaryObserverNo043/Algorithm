@@ -7,6 +7,7 @@ const CORE_ASSETS = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
+  "./images/00-cover.jpg",
   "./images/01-emperor.jpg",
   "./images/02-answer.jpg",
   "./images/03-alien-room.jpg",
@@ -14,7 +15,9 @@ const CORE_ASSETS = [
   "./images/05-jako-face.jpg",
   "./images/06-alien-jako-surprise.jpg",
   "./images/07-zed-king.jpg",
-  "./images/08-earthling-himajin.jpg"
+  "./images/08-earthling-himajin.jpg",
+  "./images/09-answer-penguin.jpg",
+  "./images/ogp-card.jpg"
 ];
 
 self.addEventListener("install", (event) => {

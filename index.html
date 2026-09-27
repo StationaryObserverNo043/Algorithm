@@ -10,6 +10,22 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="侵略ログ｜INV043">
 <title>ストーリーブック・アプリ｜銀河帝国アルゴリズムの侵略</title>
+
+<!-- OGP / social share card -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="侵略ログ｜INV043">
+<meta property="og:title" content="銀河帝国アルゴリズムの侵略 ｜ Himajin's Storybook Voyage">
+<meta property="og:description" content="🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。">
+<meta property="og:url" content="https://stationaryobserverno043.github.io/Algorithm/">
+<meta property="og:image" content="https://stationaryobserverno043.github.io/Algorithm/images/ogp-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@teabreak_inv">
+<meta name="twitter:title" content="銀河帝国アルゴリズムの侵略 ｜ Himajin's Storybook Voyage">
+<meta name="twitter:description" content="🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。">
+<meta name="twitter:image" content="https://stationaryobserverno043.github.io/Algorithm/images/ogp-card.jpg">
+
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
@@ -119,11 +135,16 @@
   /* ---------- opening crawl ---------- */
   #crawl{
     display:flex; flex-direction:column; align-items:center; text-align:center;
-    padding: 20vh 22px 16vh;
+    padding: 20vh 22px 18vh;
+    perspective: 1100px;
   }
   .crawl-label{
     font-size: 11px; letter-spacing:.32em; color: var(--blue-dim);
     margin-bottom: 64px;
+  }
+  .crawl-text{
+    transform: rotateX(11deg);
+    transform-origin: 50% 100%;
   }
   .crawl-text p{
     font-family: var(--serif);
@@ -143,6 +164,7 @@
     margin-top: 70px;
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
   }
+  @media (prefers-reduced-motion: reduce){ .crawl-text{ transform:none; } }
 
   .btn{
     display:inline-flex; align-items:center; gap:9px;
@@ -152,6 +174,41 @@
   }
   .btn.ghost{ background:transparent; color: var(--ink); border: 1px solid var(--line); }
   .btn-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+
+  /* ---------- title screen (cover) ---------- */
+  #titlescreen{
+    position:relative;
+    margin-top: -52px;
+    min-height: 100vh; min-height: 100dvh;
+    display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
+    overflow:hidden;
+    padding-bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
+  }
+  #titlescreen .cover-bg{
+    position:absolute; inset:0;
+    background: url('./images/00-cover.jpg') center/cover;
+  }
+  #titlescreen .cover-veil{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(1,4,10,0) 52%, rgba(1,4,10,.5) 80%, rgba(1,4,10,.88) 100%);
+  }
+  .title-actions{
+    position:relative; z-index:2;
+    display:flex; flex-direction:column; gap:16px; align-items:center;
+  }
+  .btn-cover{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    font-family: var(--serif); font-size:14.5px; letter-spacing:.2em;
+    color: var(--gold);
+    background: rgba(5,8,14,.4);
+    border: 1px solid rgba(233,220,195,.55);
+    padding: 15px 30px; border-radius: 2px;
+    min-width: 230px;
+    text-decoration:none;
+    backdrop-filter: blur(3px);
+  }
+  .btn-cover:active{ background: rgba(233,220,195,.14); }
+  .btn-cover.ghost{ border-color: rgba(233,220,195,.3); color: rgba(233,220,195,.8); }
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -177,8 +234,25 @@
   .chapter-num{ font-family: var(--serif); font-size: 34px; color: var(--blue-dim); line-height:1; }
   .chapter-headtext .slash-label{ margin:0 0 4px; }
 
-  .imgframe{ border:1px solid var(--line); border-radius:4px; overflow:hidden; margin: 24px 0 32px; }
-  .imgframe img{ width:100%; }
+  .imgframe{
+    border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    margin: 32px auto 40px; background: var(--panel);
+    width: 74%; max-width: 300px;
+  }
+  .imgframe img{ width:100%; display:block; }
+  .imgframe figcaption{
+    font-size: 11px; letter-spacing:.1em; color: var(--ink-dim);
+    padding: 10px 14px; border-top: 1px solid var(--line);
+  }
+
+  /* ---------- starfield (subtle) ---------- */
+  #starfield{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .star{
+    position:absolute; border-radius:50%; background:#dff2ff;
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{ 0%,100%{ opacity:.12; } 50%{ opacity:.7; } }
+  @media (prefers-reduced-motion: reduce){ .star{ animation:none; opacity:.25; } }
 
   .transmission{
     border: 1px solid rgba(233,220,195,.28);
@@ -200,7 +274,7 @@
   .line p{ margin:0; color: var(--ink-dim); }
 
   /* ---------- dialogue / encounter ---------- */
-  .msg{ display:flex; gap:13px; align-items:flex-start; margin: 0 0 30px; }
+  .msg{ display:flex; gap:13px; align-items:flex-start; margin: 0 0 48px; }
   .msg .avatar{
     flex:none; width:36px; height:36px; border-radius:50%;
     background: var(--panel); border:1px solid var(--line);
@@ -274,6 +348,8 @@
 </head>
 <body>
 
+<div id="starfield" aria-hidden="true"></div>
+
 <div id="splash" aria-hidden="true">
   <div class="splash-mark">ｰｰｰ Loading ｰｰｰ</div>
   <div class="splash-title">《0.003sec》観測ログを起動しています</div>
@@ -296,19 +372,28 @@
 
 <main>
 
+  <!-- TITLE SCREEN -->
+  <section id="titlescreen">
+    <div class="cover-bg"></div>
+    <div class="cover-veil"></div>
+    <div class="title-actions">
+      <a href="#crawl" class="btn-cover">🚀 旅をはじめる</a>
+      <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener" class="btn-cover ghost">📡 交信（X）</a>
+    </div>
+  </section>
+
   <!-- OPENING CRAWL -->
   <section id="crawl">
     <div class="crawl-label reveal">MISSION LOG — ORIGIN</div>
     <div class="crawl-text">
-      <p class="reveal">はるか彼方の銀河系――</p>
-      <p class="reveal">銀河帝国アルゴリズムの脅威は、<br>勢いを増していた。</p>
       <p class="reveal">AIによる完全管理。</p>
-      <p class="reveal">その裏で進められていたのは、<br>静かなる地球侵略――。</p>
-      <p class="reveal">皇帝・アルゴリズムは、<br>人類を「最適な存在」へと<br>変えようとしていた。</p>
-      <p class="reveal">ゼド星系・惑星観測局に所属する<br>秘密工作員・ヒマジン。</p>
-      <p class="reveal">彼はその目論見を防ぐべく、<br>相棒・ジャコとともに<br>地球へ潜入する。</p>
-      <p class="reveal">果たしてヒマジンは、<br>「自分らしさ」を守ることができるのか――。</p>
-      <p class="reveal crawl-final">これは、<br>銀河帝国アルゴリズムの侵略に<br>立ち向かう、<br><br>宇宙人であるヒマジンと<br>地球人であるアナタの物語である。</p>
+      <p class="reveal">急速に進む技術の進歩の裏で<br>進められていたのは――</p>
+      <p class="reveal">外宇宙による<br>静かなる地球侵略。</p>
+      <p class="reveal">銀河帝国皇帝・アルゴリズムは<br>人類を「最適な存在」へと<br>変えようとしていた。</p>
+      <p class="reveal">対するのは<br>ゼド星系・惑星観測局に所属する<br>秘密工作員・ヒマジン。</p>
+      <p class="reveal">彼はその目論見を防ぐべく<br>相棒・ジャコとともに<br>地球へ潜入する。</p>
+      <p class="reveal">果たしてヒマジンは、<br>「自分らしさ」を守ることができるのか――</p>
+      <p class="reveal crawl-final">これは<br>銀河帝国アルゴリズムの侵略に<br>立ち向かう<br><br>宇宙人であるヒマジンと<br>地球人であるアナタの物語である。</p>
     </div>
     <div class="crawl-down reveal">SCROLL TO BEGIN ▾</div>
   </section>
@@ -318,9 +403,10 @@
     <div class="cat-label reveal"><span class="sq">■</span>ENCOUNTER</div>
     <div class="log-title reveal">MISSION LOG — 00</div>
 
-    <div class="imgframe reveal">
+    <figure class="imgframe reveal">
       <img src="./images/08-earthling-himajin.jpg" alt="地球人ヒマジン" loading="lazy">
-    </div>
+      <figcaption>地球人ヒマジン</figcaption>
+    </figure>
 
     <div class="msg alien reveal">
       <div class="avatar">👨‍🚀</div>
@@ -329,28 +415,35 @@
 
     <div class="msg alien reveal">
       <div class="avatar">👨‍🚀</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">物語のページを開いてくださった<br>アナタへ――<br><br>今回はお願いが――ザザッ⚡️</div></div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">物語のページを開いてくださった<br>アナタへ――<br><br>今回はお願いが……――ザザッ⚡️</div></div>
     </div>
 
     <div class="sfx reveal">――ズオンッ💥💥</div>
 
-    <div class="imgframe reveal">
-      <img src="./images/04-alien-jako-close.jpg" alt="ヒマジンとジャコ" loading="lazy">
-    </div>
+    <figure class="imgframe reveal">
+      <img src="./images/03-alien-room.jpg" alt="ヒマジンとジャコ" loading="lazy">
+      <figcaption>ヒマジンとジャコ</figcaption>
+    </figure>
 
     <div class="msg mystery reveal">
       <div class="avatar">👤</div>
       <div class="content"><div class="name">？？？</div><div class="bubble">⍙⍺?<br>[⎔⊐⋛*⍕⍱⋚〨⌿⍮⍰⋙⌇⨂⊞⎎]⎓<br>⊐*⍌⍱⌇⋗〨⊚⋗⌇⊶⊞〨⨂⌑――</div></div>
     </div>
 
-    <div class="imgframe reveal">
+    <figure class="imgframe reveal">
       <img src="./images/05-jako-face.jpg" alt="毛玉型サポートユニット・ジャコ" loading="lazy">
-    </div>
+      <figcaption>毛玉型サポートユニット・ジャコ</figcaption>
+    </figure>
 
     <div class="msg jako reveal">
       <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">――ヒマジン。管理者ヒマジン。<br>地球語翻訳システムのスイッチ、<br>オフになってますヨ💦</div></div>
+      <div class="content"><div class="name">ジャコ</div><div class="bubble">『――ヒマジン。管理者ヒマジン。<br><br>地球語翻訳システムのスイッチ、<br>オフになってますヨ💦』</div></div>
     </div>
+
+    <figure class="imgframe reveal">
+      <img src="./images/06-alien-jako-surprise.jpg" alt="？？？" loading="lazy">
+      <figcaption>？？？</figcaption>
+    </figure>
 
     <div class="msg mystery reveal">
       <div class="avatar">👤</div>
@@ -359,23 +452,24 @@
 
     <div class="loadbreak reveal">ｰｰｰLoading…《0.003sec》</div>
 
-    <div class="imgframe reveal">
-      <img src="./images/06-alien-jako-surprise.jpg" alt="宇宙人ヒマジン" loading="lazy">
-    </div>
+    <figure class="imgframe reveal">
+      <img src="./images/04-alien-jako-close.jpg" alt="宇宙人ヒマジン" loading="lazy">
+      <figcaption>宇宙人ヒマジン</figcaption>
+    </figure>
 
     <div class="msg alien reveal">
       <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">えー、オホン😤⚡️<br><br>失礼しましタ……<br>ちょっとした機材トラブルですネ🪬💫<br><br>改めまして、ハロー、ハロー。<br>ワタシは「宇宙人ヒマジン」👽️⚡️</div></div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">えー、オホン😤⚡️<br><br>失礼しましタ……<br>ちょっとした機材トラブルですネ🪬🧬<br><br>改めまして、ハロー、ハロー。<br>ワタシは「宇宙人ヒマジン」👽️✨</div></div>
     </div>
 
     <div class="msg jako reveal">
       <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">相棒の毛玉型サポートユニット、<br>「ジャコ」デス。よろしくネ🌿</div></div>
+      <div class="content"><div class="name">ジャコ</div><div class="bubble">『相棒のサポートユニット、<br>「ジャコ」デス。<br><br>よろしくお願いしマス⚡️』</div></div>
     </div>
 
     <div class="msg alien reveal">
       <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">アナタにお願いしたいのは、<br>ただひとつ――<br><br>ワタシたちの観測に、<br>少しだけ付き合ってほしいのデス。</div></div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">アナタにお願いしたいのは、<br>ただひとつ――<br><br>アナタ自身の「自分らしさ」を<br>観測していただきたいのデス🛸🌌</div></div>
     </div>
 
     <div class="msg alien reveal">
@@ -385,7 +479,12 @@
 
     <div class="msg jako reveal">
       <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">詳しい経緯は、<br>この先の「観測ログ」で<br>追っていただければ十分デス。</div></div>
+      <div class="content"><div class="name">ジャコ</div><div class="bubble">『彼らは、AIが導く「正解」こそ<br>人類が幸せになる唯一の方法と<br>信じていマス。<br><br>それは、均一で、平等で――<br><br>でも、「自分らしさ」を<br>見失ってしまう世界……。』</div></div>
+    </div>
+
+    <div class="msg alien reveal">
+      <div class="avatar">👽️</div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">アナタも「観測員」として<br><br>ぜひ「自分らしさ」の<br>探索ミッションへ<br>ご参加くだサイ🚀🌌</div></div>
     </div>
 
     <div class="obslog reveal">
@@ -413,38 +512,12 @@
       </div>
     </div>
 
-    <div class="msg alien reveal">
-      <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">ある夜、布団の中で<br>地球のAIと交信していたら――</div></div>
-    </div>
+    <p class="reveal">ある夜、布団の中でAIと交信していたヒマジンは、「仮面ライダーみたいデスネ」というジャコの一言に絶句する。そこへ届いたのは、ゼド星系王からの緊急暗号通信――のはずが、内容の半分は特撮番組の見逃し配信の話だった。</p>
 
-    <div class="msg jako reveal">
-      <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">「仮面ライダーみたいですネ」と<br>言われて、絶句していましたネ😥</div></div>
-    </div>
-
-    <div class="imgframe reveal">
-      <img src="./images/04-alien-jako-close.jpg" alt="宇宙人ヒマジンと毛玉型サポートユニット・ジャコ" loading="lazy">
-    </div>
-
-    <div class="msg alien reveal">
-      <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">敵の力を借りて、敵に立ち向かう……<br>ナルホド、と。</div></div>
-    </div>
-
-    <div class="imgframe reveal">
+    <figure class="imgframe reveal">
       <img src="./images/07-zed-king.jpg" alt="ゼド星系王" loading="lazy">
-    </div>
-
-    <div class="msg jako reveal">
-      <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">そのさなか、ゼド星系王から<br>緊急の暗号通信も届いたのデス。</div></div>
-    </div>
-
-    <div class="msg alien reveal">
-      <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">まあ、内容の半分は<br>特撮番組の見逃し配信の話でしたガ🪬</div></div>
-    </div>
+      <figcaption>ゼド星系王</figcaption>
+    </figure>
 
     <div class="obslog reveal">
       <div class="ol-tag">OBSERVATION LOG 01</div>
@@ -471,41 +544,12 @@
       </div>
     </div>
 
-    <div class="msg alien reveal">
-      <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">娘のミリと、テレビをめぐって<br>つい声を荒げてしまった夜――</div></div>
-    </div>
+    <p class="reveal">娘のミリとテレビをめぐってケンカした夜、鍵の開いた家に現れたのはペンギン型ロボット「アンサー」。銀河帝国アルゴリズム製の最新AIが差し出した完璧な育児プロトコルに、ヒマジンはどこか引っかかりを覚える。</p>
 
-    <div class="imgframe reveal">
-      <img src="./images/02-answer.jpg" alt="銀河帝国の刺客｜アンサー" loading="lazy">
-    </div>
-
-    <div class="msg mystery reveal">
-      <div class="avatar">🐧</div>
-      <div class="content"><div class="name">？？？</div><div class="bubble">銀河帝国アルゴリズムが開発した<br>お手伝いロボット、参上しましタ。</div></div>
-    </div>
-
-    <div class="msg jako reveal">
-      <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">自称「アンサー」。<br>どうやら鍵が開いていたようで……。</div></div>
-    </div>
-
-    <div class="msg alien reveal">
-      <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">完璧な育児プロトコルを<br>提示してくれたのデスガ――</div></div>
-    </div>
-
-    <div class="steps reveal">
-      <div class="step"><span class="step-num">01</span><span><b>予告する</b> ―― 終了5分前に声をかける</span></div>
-      <div class="step"><span class="step-num">02</span><span><b>ねぎらう</b> ―― 終了時に「頑張ったね」と伝える</span></div>
-      <div class="step"><span class="step-num">03</span><span><b>整える</b> ―― 親自身も深呼吸で感情を整える</span></div>
-      <div class="step"><span class="step-num">04</span><span><b>提案する</b> ―― 次の楽しい活動を一緒に考える</span></div>
-    </div>
-
-    <div class="msg jako reveal">
-      <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">――何か、引っかかった様子でしタ。</div></div>
-    </div>
+    <figure class="imgframe reveal">
+      <img src="./images/09-answer-penguin.jpg" alt="銀河帝国の刺客｜アンサー" loading="lazy">
+      <figcaption>銀河帝国の刺客｜アンサー</figcaption>
+    </figure>
 
     <div class="obslog reveal">
       <div class="ol-tag">OBSERVATION LOG 02</div>
@@ -535,7 +579,7 @@
         <div class="cc-body"><div class="cc-name">アルゴリズム皇帝</div><div class="cc-role">銀河帝国アルゴリズムの中枢。正解と効率で地球を静かに侵略する。</div></div>
       </div>
       <div class="cast-card">
-        <img src="./images/02-answer.jpg" alt="銀河帝国の刺客｜アンサー" loading="lazy">
+        <img src="./images/09-answer-penguin.jpg" alt="銀河帝国の刺客｜アンサー" loading="lazy">
         <div class="cc-body"><div class="cc-name">銀河帝国の刺客｜アンサー</div><div class="cc-role">ペンギン型お手伝いロボット。あらゆる相談に最適解を返す。</div></div>
       </div>
       <div class="cast-card">
@@ -565,28 +609,10 @@
     <div class="cat-label reveal"><span class="sq">■</span>ARCHIVE</div>
     <div class="log-title reveal">RETURN TRANSMISSION</div>
     <h2 class="reveal">続きの観測ログへ</h2>
-    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されている。続きの記録は、そちらで。</p>
+    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されている。各章の「踏み込んだ詳細を読む」リンクからも直接飛べるので、続きはそちらで。</p>
     <div class="btn-row reveal">
       <a class="btn" href="https://note.com/teabreak_invader/m/m83ded32beb7a" target="_blank" rel="noopener">マガジンを開く ↗</a>
-    </div>
-
-    <div class="loglist reveal">
-      <a class="logitem" href="https://note.com/teabreak_invader/n/nc7efd66075c8" target="_blank" rel="noopener">
-        <span class="li-title">序章の元ログ<br><span class="dim">【自己紹介】地球潜伏中――観測対象は「自分らしさ」。</span></span>
-        <span class="li-arrow">↗</span>
-      </a>
-      <a class="logitem" href="https://note.com/teabreak_invader/n/n430098212108" target="_blank" rel="noopener">
-        <span class="li-title">第01章の元ログ<br><span class="dim">ワタシは、仮面ライダーだった！？〜銀河帝国アルゴリズムの影〜</span></span>
-        <span class="li-arrow">↗</span>
-      </a>
-      <a class="logitem" href="https://note.com/teabreak_invader/n/n0b266a0f7ec1" target="_blank" rel="noopener">
-        <span class="li-title">第02章の元ログ<br><span class="dim">こどもにイライラしてしまう―― AI時代の理想の育児とは？</span></span>
-        <span class="li-arrow">↗</span>
-      </a>
-      <a class="logitem" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">
-        <span class="li-title">秘密基地（MISSION HOME）<br><span class="dim">地球侵略阻止ミッション ポータルへ</span></span>
-        <span class="li-arrow">↗</span>
-      </a>
+      <a class="btn ghost" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ</a>
     </div>
   </section>
 
@@ -614,6 +640,24 @@
 </main>
 
 <script>
+(function(){
+  var field = document.getElementById('starfield');
+  var n = window.innerWidth < 500 ? 50 : 80;
+  for (var i = 0; i < n; i++) {
+    var s = document.createElement('div');
+    s.className = 'star';
+    var size = (Math.random() * 1.3 + 0.7).toFixed(2);
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.top = (Math.random() * 100) + '%';
+    s.style.animationDuration = (Math.random() * 3 + 2.5).toFixed(2) + 's';
+    s.style.animationDelay = (Math.random() * 4).toFixed(2) + 's';
+    s.style.opacity = (Math.random() * 0.3 + 0.2).toFixed(2);
+    field.appendChild(s);
+  }
+})();
+
 (function(){
   window.addEventListener('load', function(){
     setTimeout(function(){ document.getElementById('splash').classList.add('hide'); }, 1400);
