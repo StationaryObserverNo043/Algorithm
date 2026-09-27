@@ -106,10 +106,10 @@
     font-size: 11px; letter-spacing:.2em; color: var(--ink-dim); margin-bottom: 22px;
   }
 
-  h1,h2,h3{ font-family: var(--serif); font-weight:700; line-height:1.45; margin:0 0 16px; }
+  h1,h2,h3{ font-family: var(--serif); font-weight:700; line-height:1.45; margin:0 0 22px; }
   h1{ font-size: clamp(28px,7.4vw,42px); }
   h2{ font-size: clamp(21px,5.6vw,27px); }
-  p{ font-size: 15px; line-height: 1.95; color: var(--ink); margin: 0 0 14px; }
+  p{ font-size: 15px; line-height: 1.95; color: var(--ink); margin: 0 0 20px; }
   .dim{ color: var(--ink-dim); }
 
   .reveal{ opacity:0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
@@ -144,32 +144,6 @@
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
   }
 
-  /* ---------- hero ---------- */
-  #hero{
-    position:relative;
-    min-height: 88vh; min-height: 88dvh;
-    display:flex; align-items:flex-end;
-    padding-bottom: 40px;
-    overflow:hidden;
-  }
-  #hero .bg{
-    position:absolute; inset:0;
-    background: url('./images/01-emperor.jpg') center/cover;
-  }
-  #hero .veil{
-    position:absolute; inset:0;
-    background: linear-gradient(180deg, rgba(1,4,10,.25) 0%, rgba(1,4,10,.55) 45%, rgba(1,4,10,.98) 100%);
-  }
-  .hero-inner{ position:relative; z-index:2; width:100%; }
-  .badge{
-    display:inline-flex; align-items:center; gap:7px;
-    font-size: 11.5px; letter-spacing:.1em; color: var(--blue);
-    border: 1px solid rgba(82,214,255,.35); border-radius: 999px;
-    padding: 6px 13px; margin-bottom: 20px;
-  }
-  .badge .pulse{ width:6px; height:6px; border-radius:50%; background: var(--blue); animation: pulse 1.8s ease-in-out infinite; }
-  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.3; } }
-  .hero-tagline{ color: var(--gold); font-size: 14.5px; letter-spacing:.03em; margin-bottom: 26px; }
   .btn{
     display:inline-flex; align-items:center; gap:9px;
     font-family: var(--sans); font-weight:700; font-size:14.5px;
@@ -178,7 +152,6 @@
   }
   .btn.ghost{ background:transparent; color: var(--ink); border: 1px solid var(--line); }
   .btn-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-  .scrolldown{ margin-top: 22px; font-size: 11px; letter-spacing:.18em; color: var(--ink-dim); }
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -187,7 +160,7 @@
     overflow: hidden;
     white-space: nowrap;
     padding: 13px 0;
-    margin: 62px 0;
+    margin: 74px 0;
   }
   .marquee-track{
     display:inline-block;
@@ -199,12 +172,12 @@
   @media (prefers-reduced-motion: reduce){ .marquee-track{ animation:none; } }
 
   /* ---------- numbered chapter ---------- */
-  .chapter{ margin: 0 0 64px; }
-  .chapter-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:18px; }
+  .chapter{ margin: 0 0 88px; }
+  .chapter-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:30px; }
   .chapter-num{ font-family: var(--serif); font-size: 34px; color: var(--blue-dim); line-height:1; }
   .chapter-headtext .slash-label{ margin:0 0 4px; }
 
-  .imgframe{ border:1px solid var(--line); border-radius:4px; overflow:hidden; margin: 6px 0 20px; }
+  .imgframe{ border:1px solid var(--line); border-radius:4px; overflow:hidden; margin: 24px 0 32px; }
   .imgframe img{ width:100%; }
 
   .transmission{
@@ -215,8 +188,8 @@
   }
   .transmission .tlabel{ font-size:11px; letter-spacing:.16em; color: var(--gold); opacity:.75; margin-bottom:8px; display:block; }
 
-  .steps{ display:grid; gap:9px; margin: 18px 0; }
-  .step{ display:flex; align-items:flex-start; gap:12px; border-left:2px solid var(--blue-dim); padding: 6px 0 6px 14px; font-size:14px; color: var(--ink-dim); }
+  .steps{ display:grid; gap:16px; margin: 28px 0; }
+  .step{ display:flex; align-items:flex-start; gap:12px; border-left:2px solid var(--blue-dim); padding: 8px 0 8px 16px; font-size:14px; color: var(--ink-dim); }
   .step b{ color: var(--ink); font-weight:700; }
   .step-num{ font-family: var(--serif); color: var(--blue); font-size:13px; min-width:20px; }
 
@@ -227,19 +200,19 @@
   .line p{ margin:0; color: var(--ink-dim); }
 
   /* ---------- dialogue / encounter ---------- */
-  .msg{ display:flex; gap:11px; align-items:flex-start; margin: 0 0 16px; }
+  .msg{ display:flex; gap:13px; align-items:flex-start; margin: 0 0 30px; }
   .msg .avatar{
-    flex:none; width:34px; height:34px; border-radius:50%;
+    flex:none; width:36px; height:36px; border-radius:50%;
     background: var(--panel); border:1px solid var(--line);
     display:flex; align-items:center; justify-content:center; font-size:17px;
   }
   .msg .content{ flex:1; min-width:0; }
-  .msg .name{ font-size:11.5px; font-weight:700; letter-spacing:.05em; color: var(--blue); margin-bottom:5px; }
+  .msg .name{ font-size:11.5px; font-weight:700; letter-spacing:.05em; color: var(--blue); margin-bottom:8px; }
   .msg.jako .name{ color: var(--amber); }
   .msg.mystery .name{ color: var(--ink-dim); }
   .msg .bubble{
     background: var(--panel); border:1px solid var(--line); border-radius: 3px 10px 10px 10px;
-    padding: 11px 14px; font-size:14.5px; line-height:1.9; color: var(--ink);
+    padding: 16px 18px; font-size:14.5px; line-height:2.05; color: var(--ink);
   }
   .msg.mystery .bubble{
     font-family: "SFMono-Regular", Consolas, monospace;
@@ -248,51 +221,51 @@
   }
   .sfx{
     text-align:center; font-family: var(--serif); font-size:13px;
-    letter-spacing:.24em; color: var(--blue-dim); margin: 22px 0;
+    letter-spacing:.24em; color: var(--blue-dim); margin: 36px 0;
   }
   .loadbreak{
     text-align:center; font-size:11px; letter-spacing:.28em; color: var(--blue-dim);
-    margin: 34px 0; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin: 48px 0; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
   .obslog{
     border: 1px solid rgba(82,214,255,.3); background: rgba(82,214,255,.05);
-    border-radius: 4px; padding: 17px 18px; margin: 26px 0 4px;
+    border-radius: 4px; padding: 22px 20px; margin: 40px 0 12px;
   }
-  .obslog .ol-tag{ font-size:11px; letter-spacing:.16em; color: var(--blue); margin-bottom:7px; }
-  .obslog .ol-title{ font-family: var(--serif); font-size:15px; margin-bottom: 8px; color: var(--ink); }
-  .obslog p{ font-size: 13px; margin-bottom: 12px; }
+  .obslog .ol-tag{ font-size:11px; letter-spacing:.16em; color: var(--blue); margin-bottom:10px; }
+  .obslog .ol-title{ font-family: var(--serif); font-size:15px; margin-bottom: 12px; color: var(--ink); }
+  .obslog p{ font-size: 13px; margin-bottom: 16px; }
   .obslog a.ol-link{ font-size: 13px; font-weight:700; }
 
   /* ---------- cast grid ---------- */
-  .cast{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top: 20px; }
+  .cast{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top: 32px; }
   .cast-card{ border:1px solid var(--line); border-radius:4px; overflow:hidden; background: var(--panel); }
   .cast-card img{ width:100%; height:112px; object-fit:cover; }
-  .cast-card .cc-body{ padding: 11px 13px 15px; }
-  .cast-card .cc-name{ font-family: var(--serif); font-size:13.5px; margin-bottom:5px; }
-  .cast-card .cc-role{ font-size:11.5px; color: var(--ink-dim); line-height:1.65; }
+  .cast-card .cc-body{ padding: 14px 15px 18px; }
+  .cast-card .cc-name{ font-family: var(--serif); font-size:13.5px; margin-bottom:7px; }
+  .cast-card .cc-role{ font-size:11.5px; color: var(--ink-dim); line-height:1.7; }
   .cast-card.full{ grid-column: 1 / -1; }
   .cast-card.full img{ height:150px; }
 
   /* ---------- archive / link list ---------- */
-  .loglist{ display:flex; flex-direction:column; gap:9px; margin: 18px 0 0; }
+  .loglist{ display:flex; flex-direction:column; gap:14px; margin: 28px 0 0; }
   .logitem{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    border:1px solid var(--line); border-radius:3px; padding: 14px 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    border:1px solid var(--line); border-radius:3px; padding: 18px 18px;
     background: var(--panel); font-size:13px; color: var(--ink);
   }
   .logitem:hover{ border-color: var(--blue-dim); }
-  .logitem .li-title{ line-height:1.65; }
+  .logitem .li-title{ line-height:1.75; }
   .logitem .li-arrow{ color: var(--blue); flex:none; }
 
   /* ---------- footer ---------- */
-  footer{ padding: 40px 0 calc(env(safe-area-inset-bottom,0px) + 40px); border-top: 1px solid var(--line); margin-top: 30px; }
-  .foot-sig{ font-family: var(--serif); font-size: 14px; color: var(--ink); margin-bottom: 4px; }
-  .foot-note{ font-size: 12px; color: var(--ink-dim); margin-bottom: 22px; }
+  footer{ padding: 52px 0 calc(env(safe-area-inset-bottom,0px) + 40px); border-top: 1px solid var(--line); margin-top: 40px; }
+  .foot-sig{ font-family: var(--serif); font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .foot-note{ font-size: 12px; color: var(--ink-dim); margin-bottom: 32px; }
   .pwa-note{
     font-size: 11.5px; color: var(--ink-dim); line-height:1.9;
-    border: 1px solid var(--line); border-radius:3px; padding: 14px 16px; margin-bottom: 20px;
+    border: 1px solid var(--line); border-radius:3px; padding: 18px 18px; margin-bottom: 30px;
   }
-  .foot-links{ display:flex; flex-wrap:wrap; gap: 10px 18px; font-size:12px; margin-bottom: 22px; }
+  .foot-links{ display:flex; flex-wrap:wrap; gap: 14px 20px; font-size:12px; margin-bottom: 30px; }
   .foot-links a{ color: var(--ink-dim); }
   .foot-links a:hover{ color: var(--blue); }
   .credit-mini{ font-size: 10.5px; color: var(--ink-dim); opacity:.7; line-height:1.9; }
@@ -339,29 +312,6 @@
     </div>
     <div class="crawl-down reveal">SCROLL TO BEGIN ▾</div>
   </section>
-
-  <!-- HERO -->
-  <section id="hero">
-    <div class="bg"></div>
-    <div class="veil"></div>
-    <div class="wrap hero-inner">
-      <div class="badge reveal in"><span class="pulse"></span>👑 INVASION LOG ACTIVE</div>
-      <h1 class="reveal in">銀河帝国<br>アルゴリズムの侵略</h1>
-      <div class="hero-tagline reveal in">その正解――本当にアナタの物語ですカ？</div>
-      <div class="btn-row reveal in">
-        <a href="#prologue" class="btn">📡 観測ログを読む</a>
-        <a href="https://note.com/teabreak_invader/m/m83ded32beb7a" target="_blank" rel="noopener" class="btn ghost">マガジンを開く ↗</a>
-      </div>
-      <div class="scrolldown reveal in">SCROLL TO OBSERVE ▾</div>
-    </div>
-  </section>
-
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>銀河帝国アルゴリズムの侵略</span><span>GALACTIC EMPIRE ALGORITHM</span><span>ｰｰｰ 観測ログ ｰｰｰ</span><span>MISSION EARTH GUARD</span>
-      <span>銀河帝国アルゴリズムの侵略</span><span>GALACTIC EMPIRE ALGORITHM</span><span>ｰｰｰ 観測ログ ｰｰｰ</span><span>MISSION EARTH GUARD</span>
-    </div>
-  </div>
 
   <!-- ENCOUNTER -->
   <section id="prologue" class="wrap">
