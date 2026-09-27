@@ -13,7 +13,8 @@ const CORE_ASSETS = [
   "./images/04-alien-jako-close.jpg",
   "./images/05-jako-face.jpg",
   "./images/06-alien-jako-surprise.jpg",
-  "./images/07-zed-king.jpg"
+  "./images/07-zed-king.jpg",
+  "./images/08-earthling-himajin.jpg"
 ];
 
 self.addEventListener("install", (event) => {
