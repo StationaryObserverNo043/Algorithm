@@ -1,5 +1,5 @@
 // 銀河帝国アルゴリズムの侵略 — Storybook PWA Service Worker
-const CACHE_NAME = "invasion-log-cache-v2";
+const CACHE_NAME = "invasion-log-cache-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",

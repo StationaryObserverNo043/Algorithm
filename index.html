@@ -50,7 +50,7 @@
   *{ box-sizing:border-box; }
   html{
     scroll-behavior: smooth;
-    scroll-padding-top: calc(56px + env(safe-area-inset-top,0px));
+    scroll-padding-top: calc(104px + env(safe-area-inset-top,0px));
   }
   body{
     margin:0;
@@ -84,26 +84,45 @@
   #topnav{
     position: fixed; top:0; left:0; right:0; z-index: 80;
     padding-top: env(safe-area-inset-top,0px);
-    background: rgba(10,21,51,.8);
+    background: rgba(10,21,51,.86);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
   .nav-inner{
     max-width: 760px; margin:0 auto;
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 13px 18px;
-    font-size: 12px; letter-spacing:.06em;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding: 10px 14px 6px;
   }
-  .nav-brand{ display:flex; align-items:center; gap:8px; color: var(--ink); font-weight:700; }
-  .nav-brand .dot{ width:6px; height:6px; border-radius:50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); }
-  .nav-links{ display:flex; gap: 16px; overflow-x:auto; scrollbar-width:none; }
+  /* 押せるとわかるボタン表現（枠・面・押下時の沈み込み） */
+  .nav-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family: var(--sans); font-size:12.5px; font-weight:700; letter-spacing:.08em;
+    color: var(--blue); background: rgba(82,214,255,.1);
+    border:1px solid rgba(82,214,255,.55); border-radius:999px;
+    padding: 8px 15px; cursor:pointer; text-decoration:none;
+    -webkit-appearance:none; appearance:none;
+    box-shadow: 0 2px 0 rgba(0,0,0,.28);
+    transition: transform .12s ease, background .2s ease;
+  }
+  .nav-btn:active{ transform: translateY(1px) scale(.97); background: rgba(82,214,255,.24); }
+  .nav-links{
+    max-width:760px; margin:0 auto;
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+    padding: 2px 14px 10px;
+  }
   .nav-links::-webkit-scrollbar{ display:none; }
-  .nav-links a{ color: var(--ink-dim); white-space:nowrap; }
-  .nav-links a:hover{ color: var(--blue); }
-  .nav-cta{ flex:none; margin-left:14px; color: var(--blue); white-space:nowrap; }
+  .nav-chip{
+    flex:none; white-space:nowrap;
+    font-size:11.5px; letter-spacing:.08em; color: var(--ink);
+    background: rgba(255,255,255,.07); border:1px solid rgba(160,190,235,.3);
+    border-radius:999px; padding: 7px 13px;
+    box-shadow: 0 2px 0 rgba(0,0,0,.22);
+    transition: transform .12s ease, background .2s ease;
+  }
+  .nav-chip:active{ transform: translateY(1px) scale(.97); background: rgba(82,214,255,.22); }
 
   /* ---------- wrapper ---------- */
-  main{ padding-top: 52px; }
+  main{ padding-top: 96px; }
   .wrap{ max-width: 640px; margin:0 auto; padding: 0 22px; }
   section{ position:relative; }
 
@@ -179,10 +198,17 @@
   html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
   html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
+  /* 表紙の下にある「最初のページ」 */
+  .book-page{
+    position:absolute; inset:0;
+    background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 8%), linear-gradient(135deg, #0d1a40, #09122e);
+  }
+  .book-page::before{ content:""; position:absolute; inset:18px; border:1px solid rgba(233,220,195,.16); }
+  /* 厚みのある表紙（前面・背面・小口をZ軸に積む） */
   .book-cover{
     position:absolute; inset:0;
     transform-origin: left center; transform-style: preserve-3d;
-    transition: transform 1.5s cubic-bezier(.65,.02,.25,1);
+    transition: transform 3.4s cubic-bezier(.5,0,.2,1);
     will-change: transform;
   }
   .book-cover .face{
@@ -190,6 +216,7 @@
     backface-visibility:hidden; -webkit-backface-visibility:hidden;
   }
   .book-cover .front{
+    transform: translateZ(9px);
     display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
     padding-bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
     background: var(--void);
@@ -199,12 +226,17 @@
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
   .book-cover .back{ /* 表紙の裏（見返し） */
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(9px);
     background: linear-gradient(135deg, #0b1a3d, #050b1e);
   }
   .book-cover .back::before{
     content:""; position:absolute; inset:16px; border:1px solid rgba(233,220,195,.22);
   }
+  .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
+  .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
+  .book-cover .edge.r{ top:0; bottom:0; left:calc(100% - 9px); width:18px; transform: rotateY(90deg); }
+  .book-cover .edge.t{ left:0; right:0; top:-9px; height:18px; transform: rotateX(90deg); background: linear-gradient(180deg, #0a1636, #2b4085 50%, #0a1636); }
+  .book-cover .edge.b{ left:0; right:0; bottom:-9px; height:18px; transform: rotateX(90deg); background: linear-gradient(180deg, #0a1636, #2b4085 50%, #0a1636); }
   .cover-bg{
     position:absolute; inset:0;
     background: url('./images/00-cover.jpg') center/cover;
@@ -276,7 +308,7 @@
 
   /* ---------- starfield (subtle) ---------- */
   #starfield{
-    position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;
+    position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
     background:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
@@ -396,9 +428,10 @@
     text-align:center;
     padding: 34vh 0 calc(env(safe-area-inset-bottom,0px) + 30vh);
   }
+  .end{ position:relative; z-index:1; }
   .end-line{
     font-family: var(--serif); font-size: 14px; letter-spacing:.2em; color: var(--gold);
-    opacity:.85;
+    text-shadow: 0 0 14px rgba(233,220,195,.35);
   }
 </style>
 </head>
@@ -414,7 +447,9 @@
 
 <!-- TITLE SCREEN : 本編から完全に独立した表紙 -->
 <div id="bookintro">
+  <div class="book-page"></div>
   <div class="book-cover">
+    <div class="edge l"></div><div class="edge r"></div><div class="edge t"></div><div class="edge b"></div>
     <div class="face front">
       <div class="cover-bg"></div>
       <div class="cover-veil"></div>
@@ -429,16 +464,16 @@
 
 <header id="topnav">
   <div class="nav-inner">
-    <div class="nav-brand"><span class="dot"></span>INV043</div>
-    <nav class="nav-links">
-      <a href="#prologue">PROLOGUE</a>
-      <a href="#ch01">CH.01</a>
-      <a href="#ch02">CH.02</a>
-      <a href="#cast">CAST</a>
-      <a href="#archive">ARCHIVE</a>
-    </nav>
-    <a class="nav-cta" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ</a>
+    <button type="button" id="titleBtn" class="nav-btn" aria-label="本を閉じてタイトル画面に戻る">📖 TITLE</button>
+    <a class="nav-btn" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ ↗</a>
   </div>
+  <nav class="nav-links" aria-label="セクション">
+    <a class="nav-chip" href="#prologue">PROLOGUE</a>
+    <a class="nav-chip" href="#ch01">CH.01</a>
+    <a class="nav-chip" href="#ch02">CH.02</a>
+    <a class="nav-chip" href="#cast">CAST</a>
+    <a class="nav-chip" href="#archive">ARCHIVE</a>
+  </nav>
 </header>
 
 <main>
@@ -483,8 +518,8 @@
     <div class="sfx reveal">――ズオンッ💥💥</div>
 
     <figure class="imgframe reveal">
-      <img src="./images/03-alien-room.jpg" alt="ヒマジンとジャコ" loading="lazy">
-      <figcaption>ヒマジンとジャコ</figcaption>
+      <img src="./images/03-alien-room.jpg" alt="？？？ & ？？？" loading="lazy">
+      <figcaption>？？？ &amp; ？？？</figcaption>
     </figure>
 
     <div class="msg mystery reveal">
@@ -574,7 +609,7 @@
       </div>
     </div>
 
-    <p class="reveal">ある夜、布団の中でAIと交信していたヒマジンは、「仮面ライダーみたいですね」というAIの一言に気づきを得る。そこへ届いたのは、ゼド星系王からの緊急暗号通信――のはずが、内容の半分は特撮番組の見逃し配信の話だった。</p>
+    <p class="reveal">ある夜、布団の中でAIと交信していたヒマジンは、「仮面ライダーみたいですね」というAIの一言に気づきを得る。そこへ届いたのは、ゼド星系王からの緊急暗号通信。<br>実は王は、ヒマジンのオタ友で――？</p>
 
     <figure class="imgframe reveal">
       <img src="./images/07-zed-king.jpg" alt="ゼド星系王" loading="lazy">
@@ -632,7 +667,7 @@
   <section id="cast" class="wrap">
     <div class="cat-label reveal"><span class="sq">■</span>CAST</div>
     <div class="log-title reveal">SCAN COMPLETE</div>
-    <h2 class="reveal">アナタの物語が、宇宙の星になりますように</h2>
+    <h2 class="reveal">アナタの物語が、<br>宇宙の星になりますように</h2>
     <p class="reveal">銀河帝国アルゴリズムは、<br>正解と効率であなたを導く。<br><br>けれど本当の敵はAIではなく、<br>「自分の気持ちを疑うココロ」。<br><br>アルゴリズムが出した答えを<br>否定するのではなく、<br>それを力に変えて物語を紡ぐこと――<br>それが、恒点観測員043号の<br>ミッションの核心だ。<br><br>あなたの日常にも、<br>観測する価値のある宇宙が眠っている。</p>
 
     <div class="cast reveal">
@@ -798,12 +833,16 @@
     els.forEach(function(el){ io.observe(el); });
   }
 
+  function jumpTop(){
+    root.style.scrollBehavior = 'auto'; window.scrollTo(0, 0); root.style.scrollBehavior = '';
+  }
+
   /* --- 表紙 → 本を開く → Loading → スクロール本編 --- */
   var started = false;
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
     intro.classList.add('opening');
-    var openMs = reduce ? 300 : 1250;
+    var openMs = reduce ? 300 : 3000;
     setTimeout(function(){
       var bar = splash.querySelector('.splash-bar span');
       bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
@@ -812,10 +851,28 @@
     setTimeout(function(){
       root.classList.remove('intro-lock');
       intro.style.display = 'none';
-      window.scrollTo(0, 0);
+      jumpTop();
       measure(); updateCrawl(); initReveal();
       splash.classList.add('hide');
     }, openMs + 1700);
+  });
+
+  /* --- TITLE：本を閉じてタイトル画面へ戻る --- */
+  var closing = false;
+  document.getElementById('titleBtn').addEventListener('click', function(){
+    if (!started || closing) return; closing = true;
+    var cover = intro.querySelector('.book-cover');
+    cover.style.transition = 'none';
+    intro.classList.add('opening');
+    intro.style.display = '';
+    void cover.offsetWidth;
+    cover.style.transition = '';
+    requestAnimationFrame(function(){ intro.classList.remove('opening'); });
+    setTimeout(function(){
+      root.classList.add('intro-lock');
+      jumpTop(); measure(); updateCrawl();
+      started = false; closing = false;
+    }, reduce ? 500 : 3600);
   });
 
   if ('serviceWorker' in navigator) {
