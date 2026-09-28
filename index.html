@@ -225,9 +225,13 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏（見返し）：枠付きページ */
+  .book-cover .back{ /* 表紙の裏（見返し）：枠付きページ全体が見えるように contain */
     transform: rotateY(180deg) translateZ(9px);
-    background: url('./images/10-endpaper-framed.jpg') center/cover, linear-gradient(135deg, #0b1a3d, #050b1e);
+    background-color: #0c1e46;
+    background-image: url('./images/10-endpaper-framed.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
   .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
   .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
@@ -268,6 +272,17 @@
     #bookintro.opening .book-cover{ transform:none; opacity:0; }
   }
 
+  /* ---------- endpaper return（TITLEへ戻る途中、見返しへじんわり） ---------- */
+  #endpaperReturn{
+    position:fixed; inset:0; z-index:940; opacity:0; pointer-events:none;
+    transition: opacity 1.2s ease;
+    background-color: #0c1e46;
+    background-image: url('./images/10-endpaper-framed.jpg');
+    background-size: contain; background-repeat:no-repeat; background-position:center;
+  }
+  #endpaperReturn.show{ opacity:1; }
+  @media (prefers-reduced-motion: reduce){ #endpaperReturn{ transition: opacity .4s ease; } }
+
   /* ---------- marquee ---------- */
   .marquee{
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -306,10 +321,11 @@
   /* ---------- paper background (本編の背景となる紙の質感) ---------- */
   #paperbg{
     position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background-color: #0c1e46;
     background-image: url('./images/11-paper-texture.jpg');
-    background-repeat: repeat-y;
-    background-size: 100% auto;
-    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
     opacity: 0;
     transition: opacity 2.6s ease;
   }
@@ -471,6 +487,7 @@
     <div class="face back"></div>
   </div>
 </div>
+<div id="endpaperReturn" aria-hidden="true"></div>
 
 <header id="topnav">
   <div class="nav-inner">
@@ -868,23 +885,48 @@
     }, openMs + 1700);
   });
 
-  /* --- TITLE：本を閉じてタイトル画面へ戻る --- */
+  /* --- TITLE：見返しへじんわり戻る → Loading（専用メッセージ）→ 本を閉じてタイトルへ --- */
   var closing = false;
+  var splashTitleEl = splash.querySelector('.splash-title');
+  var OPEN_MSG = splashTitleEl.textContent;
+  var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
   document.getElementById('titleBtn').addEventListener('click', function(){
     if (!started || closing) return; closing = true;
-    var cover = intro.querySelector('.book-cover');
-    cover.style.transition = 'none';
-    intro.classList.add('opening');
-    intro.style.display = '';
-    void cover.offsetWidth;
-    cover.style.transition = '';
-    requestAnimationFrame(function(){ intro.classList.remove('opening'); });
-    document.getElementById('paperbg').classList.remove('show');
+    var paper = document.getElementById('paperbg');
+    var epr = document.getElementById('endpaperReturn');
+    var returnMs = reduce ? 300 : 1200;
+    var loadMs = reduce ? 300 : 1500;
+    var closeAnimMs = reduce ? 400 : 3600;
+
+    paper.classList.remove('show');
+    epr.classList.add('show');
+
     setTimeout(function(){
+      splashTitleEl.textContent = CLOSE_MSG;
+      var bar = splash.querySelector('.splash-bar span');
+      bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+      splash.classList.remove('hide');
+    }, returnMs);
+
+    setTimeout(function(){
+      splash.classList.add('hide');
+      epr.classList.remove('show');
+
+      var cover = intro.querySelector('.book-cover');
+      cover.style.transition = 'none';
+      intro.classList.add('opening'); /* 見返しが見えている状態を維持 */
+      intro.style.display = '';
+      void cover.offsetWidth;
+      cover.style.transition = '';
       root.classList.add('intro-lock');
-      jumpTop(); measure(); updateCrawl();
-      started = false; closing = false;
-    }, reduce ? 500 : 3600);
+      requestAnimationFrame(function(){ intro.classList.remove('opening'); }); /* 表紙を閉じる */
+
+      setTimeout(function(){
+        jumpTop(); measure(); updateCrawl();
+        splashTitleEl.textContent = OPEN_MSG;
+        started = false; closing = false;
+      }, closeAnimMs);
+    }, returnMs + loadMs);
   });
 
   if ('serviceWorker' in navigator) {
