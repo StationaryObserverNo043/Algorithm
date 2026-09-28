@@ -225,12 +225,9 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏（見返し） */
+  .book-cover .back{ /* 表紙の裏（見返し）：枠付きページ */
     transform: rotateY(180deg) translateZ(9px);
-    background: linear-gradient(135deg, #0b1a3d, #050b1e);
-  }
-  .book-cover .back::before{
-    content:""; position:absolute; inset:16px; border:1px solid rgba(233,220,195,.22);
+    background: url('./images/10-endpaper-framed.jpg') center/cover, linear-gradient(135deg, #0b1a3d, #050b1e);
   }
   .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
   .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
@@ -306,13 +303,25 @@
     padding: 10px 14px; border-top: 1px solid var(--line);
   }
 
+  /* ---------- paper background (本編の背景となる紙の質感) ---------- */
+  #paperbg{
+    position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background-image: url('./images/11-paper-texture.jpg');
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+    background-position: top center;
+    opacity: 0;
+    transition: opacity 2.6s ease;
+  }
+  #paperbg.show{ opacity: 1; }
+
   /* ---------- starfield (subtle) ---------- */
   #starfield{
     position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
     background:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
-      linear-gradient(180deg, #0b1738 0%, #0a1533 55%, #081029 100%);
+      linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%);
   }
   .star{
     position:absolute; border-radius:50%; background:#dff2ff;
@@ -437,6 +446,7 @@
 </head>
 <body>
 
+<div id="paperbg" aria-hidden="true"></div>
 <div id="starfield" aria-hidden="true"></div>
 
 <div id="splash" class="hide" aria-hidden="true">
@@ -854,6 +864,7 @@
       jumpTop();
       measure(); updateCrawl(); initReveal();
       splash.classList.add('hide');
+      document.getElementById('paperbg').classList.add('show');
     }, openMs + 1700);
   });
 
@@ -868,6 +879,7 @@
     void cover.offsetWidth;
     cover.style.transition = '';
     requestAnimationFrame(function(){ intro.classList.remove('opening'); });
+    document.getElementById('paperbg').classList.remove('show');
     setTimeout(function(){
       root.classList.add('intro-lock');
       jumpTop(); measure(); updateCrawl();
