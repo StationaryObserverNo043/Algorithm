@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="intro-lock">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#01040a">
+<meta name="theme-color" content="#0a1533">
 <meta name="description" content="🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="侵略ログ｜INV043">
 <meta property="og:title" content="銀河帝国アルゴリズムの侵略 ｜ Himajin's Storybook Voyage">
-<meta property="og:description" content="🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。">
+<meta property="og:description" content="ストーリーブックアプリ『銀河帝国アルゴリズムの侵略』。宇宙人のヒマジンと、地球人のアナタの物語――">
 <meta property="og:url" content="https://stationaryobserverno043.github.io/Algorithm/">
 <meta property="og:image" content="https://stationaryobserverno043.github.io/Algorithm/images/ogp-card.jpg">
 <meta property="og:image:width" content="1200">
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@teabreak_inv">
 <meta name="twitter:title" content="銀河帝国アルゴリズムの侵略 ｜ Himajin's Storybook Voyage">
-<meta name="twitter:description" content="🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。">
+<meta name="twitter:description" content="ストーリーブックアプリ『銀河帝国アルゴリズムの侵略』。宇宙人のヒマジンと、地球人のアナタの物語――">
 <meta name="twitter:image" content="https://stationaryobserverno043.github.io/Algorithm/images/ogp-card.jpg">
 
 <link rel="manifest" href="./manifest.json">
@@ -34,16 +34,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#01040a;
-    --panel:#0a0f1a;
-    --panel-2:#0d1420;
+    --void:#0a1533;
+    --panel:#111f4a;
+    --panel-2:#15265a;
     --line: rgba(140,180,220,.15);
     --blue: #52d6ff;
-    --blue-dim: #2a6b86;
+    --blue-dim: #5b8fbb;
     --gold: #e9dcc3;
     --amber: #e79a55;
     --ink: #eef3fa;
-    --ink-dim: #93a2ba;
+    --ink-dim: #a9b8d4;
     --serif: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
     --sans: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   }
@@ -84,7 +84,7 @@
   #topnav{
     position: fixed; top:0; left:0; right:0; z-index: 80;
     padding-top: env(safe-area-inset-top,0px);
-    background: rgba(1,4,10,.72);
+    background: rgba(10,21,51,.8);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
@@ -133,18 +133,18 @@
   @media (prefers-reduced-motion: reduce){ .reveal{ transition:none; opacity:1; transform:none; } html{ scroll-behavior:auto; } }
 
   /* ---------- opening crawl ---------- */
+  /* 各行の縮小・傾き・フェードは JS（スクロール連動）で制御：手前(下)=大きく鮮明 → 奥(上)=小さく消える */
   #crawl{
     display:flex; flex-direction:column; align-items:center; text-align:center;
-    padding: 20vh 22px 18vh;
-    perspective: 1100px;
+    padding: 50vh 22px 18vh;
   }
   .crawl-label{
     font-size: 11px; letter-spacing:.32em; color: var(--blue-dim);
-    margin-bottom: 64px;
+    margin-bottom: 22px;
   }
-  .crawl-text{
-    transform: rotateX(11deg);
-    transform-origin: 50% 100%;
+  .crawl-hint{
+    font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
+    margin-bottom: 64px;
   }
   .crawl-text p{
     font-family: var(--serif);
@@ -153,6 +153,7 @@
     color: var(--ink-dim);
     max-width: 400px;
     margin: 0 0 58px;
+    will-change: transform, opacity;
   }
   .crawl-text p:last-child{ margin-bottom: 0; }
   .crawl-text p.crawl-final{
@@ -164,7 +165,6 @@
     margin-top: 70px;
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
   }
-  @media (prefers-reduced-motion: reduce){ .crawl-text{ transform:none; } }
 
   .btn{
     display:inline-flex; align-items:center; gap:9px;
@@ -175,40 +175,69 @@
   .btn.ghost{ background:transparent; color: var(--ink); border: 1px solid var(--line); }
   .btn-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
 
-  /* ---------- title screen (cover) ---------- */
-  #titlescreen{
-    position:relative;
-    margin-top: -52px;
-    min-height: 100vh; min-height: 100dvh;
-    display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
-    overflow:hidden;
-    padding-bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
+  /* ---------- title screen (独立した本の表紙) ---------- */
+  html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
+  html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
+  #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
+  .book-cover{
+    position:absolute; inset:0;
+    transform-origin: left center; transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(.65,.02,.25,1);
+    will-change: transform;
   }
-  #titlescreen .cover-bg{
+  .book-cover .face{
+    position:absolute; inset:0; overflow:hidden;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  }
+  .book-cover .front{
+    display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
+    padding-bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
+    background: var(--void);
+  }
+  .book-cover .front::after{ /* 背表紙の陰影 */
+    content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
+    background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
+  }
+  .book-cover .back{ /* 表紙の裏（見返し） */
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #0b1a3d, #050b1e);
+  }
+  .book-cover .back::before{
+    content:""; position:absolute; inset:16px; border:1px solid rgba(233,220,195,.22);
+  }
+  .cover-bg{
     position:absolute; inset:0;
     background: url('./images/00-cover.jpg') center/cover;
   }
-  #titlescreen .cover-veil{
+  .cover-veil{
     position:absolute; inset:0;
-    background: linear-gradient(180deg, rgba(1,4,10,0) 52%, rgba(1,4,10,.5) 80%, rgba(1,4,10,.88) 100%);
+    background: linear-gradient(180deg, rgba(10,21,51,0) 52%, rgba(10,21,51,.5) 80%, rgba(10,21,51,.88) 100%);
   }
   .title-actions{
     position:relative; z-index:2;
     display:flex; flex-direction:column; gap:16px; align-items:center;
+    transition: opacity .4s ease;
   }
+  #bookintro.opening .book-cover{ transform: rotateY(-180deg); }
+  #bookintro.opening .title-actions{ opacity:0; pointer-events:none; }
   .btn-cover{
     display:inline-flex; align-items:center; justify-content:center; gap:10px;
     font-family: var(--serif); font-size:14.5px; letter-spacing:.2em;
     color: var(--gold);
-    background: rgba(5,8,14,.4);
+    background: rgba(8,18,46,.45);
     border: 1px solid rgba(233,220,195,.55);
     padding: 15px 30px; border-radius: 2px;
     min-width: 230px;
-    text-decoration:none;
+    text-decoration:none; cursor:pointer;
+    -webkit-appearance:none; appearance:none;
     backdrop-filter: blur(3px);
   }
   .btn-cover:active{ background: rgba(233,220,195,.14); }
   .btn-cover.ghost{ border-color: rgba(233,220,195,.3); color: rgba(233,220,195,.8); }
+  @media (prefers-reduced-motion: reduce){
+    .book-cover{ transition: opacity .4s ease; }
+    #bookintro.opening .book-cover{ transform:none; opacity:0; }
+  }
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -246,7 +275,13 @@
   }
 
   /* ---------- starfield (subtle) ---------- */
-  #starfield{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  #starfield{
+    position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
+      radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
+      linear-gradient(180deg, #0b1738 0%, #0a1533 55%, #081029 100%);
+  }
   .star{
     position:absolute; border-radius:50%; background:#dff2ff;
     animation: twinkle ease-in-out infinite;
@@ -331,29 +366,65 @@
   .logitem .li-title{ line-height:1.75; }
   .logitem .li-arrow{ color: var(--blue); flex:none; }
 
-  /* ---------- footer ---------- */
-  footer{ padding: 52px 0 calc(env(safe-area-inset-bottom,0px) + 40px); border-top: 1px solid var(--line); margin-top: 40px; }
-  .foot-sig{ font-family: var(--serif); font-size: 14px; color: var(--ink); margin-bottom: 8px; }
-  .foot-note{ font-size: 12px; color: var(--ink-dim); margin-bottom: 32px; }
-  .pwa-note{
-    font-size: 11.5px; color: var(--ink-dim); line-height:1.9;
-    border: 1px solid var(--line); border-radius:3px; padding: 18px 18px; margin-bottom: 30px;
+  /* ---------- afterword: base / pwa / notice / end ---------- */
+  /* 物語の外側（作者・アプリ・作品情報）。物語パートより小さく静かなトーンで分離 */
+  .afterword{ margin-top: 24px; }
+  .info-block{ margin: 0 0 64px; }
+  .info-label{
+    display:flex; align-items:center; gap:8px;
+    font-size: 11.5px; letter-spacing:.14em; color: var(--ink-dim);
+    margin-bottom: 18px;
   }
-  .foot-links{ display:flex; flex-wrap:wrap; gap: 14px 20px; font-size:12px; margin-bottom: 30px; }
-  .foot-links a{ color: var(--ink-dim); }
-  .foot-links a:hover{ color: var(--blue); }
-  .credit-mini{ font-size: 10.5px; color: var(--ink-dim); opacity:.7; line-height:1.9; }
-  .credit-mini a{ color: var(--ink-dim); text-decoration: underline; }
+  .info-label .sq{ color: var(--blue-dim); }
+
+  .base-sig{ font-family: var(--serif); font-size: 15px; color: var(--ink); line-height:1.8; margin-bottom: 6px; }
+  .base-sub{ font-size: 12px; letter-spacing:.06em; color: var(--ink-dim); line-height:1.9; margin: 0; }
+  .base-sub .warn{ display:block; margin-top: 4px; font-size: 11px; opacity:.8; }
+  .base-links{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
+  .base-link{
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--line); border-radius:3px; padding: 14px 15px;
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .base-link:hover{ border-color: var(--blue-dim); color: var(--blue); }
+
+  .info-text{ font-size: 12px; line-height: 2; color: var(--ink-dim); margin: 0 0 14px; }
+  .info-text:last-child{ margin-bottom: 0; }
+  .info-box{ border:1px solid var(--line); border-radius:3px; padding: 18px 18px; }
+
+  .end{
+    text-align:center;
+    padding: 34vh 0 calc(env(safe-area-inset-bottom,0px) + 30vh);
+  }
+  .end-line{
+    font-family: var(--serif); font-size: 14px; letter-spacing:.2em; color: var(--gold);
+    opacity:.85;
+  }
 </style>
 </head>
 <body>
 
 <div id="starfield" aria-hidden="true"></div>
 
-<div id="splash" aria-hidden="true">
+<div id="splash" class="hide" aria-hidden="true">
   <div class="splash-mark">ｰｰｰ Loading ｰｰｰ</div>
   <div class="splash-title">《0.003sec》観測ログを起動しています</div>
   <div class="splash-bar"><span></span></div>
+</div>
+
+<!-- TITLE SCREEN : 本編から完全に独立した表紙 -->
+<div id="bookintro">
+  <div class="book-cover">
+    <div class="face front">
+      <div class="cover-bg"></div>
+      <div class="cover-veil"></div>
+      <div class="title-actions">
+        <button type="button" id="startBtn" class="btn-cover">🚀 旅をはじめる</button>
+        <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener" class="btn-cover ghost">📡 交信（X）</a>
+      </div>
+    </div>
+    <div class="face back"></div>
+  </div>
 </div>
 
 <header id="topnav">
@@ -372,28 +443,19 @@
 
 <main>
 
-  <!-- TITLE SCREEN -->
-  <section id="titlescreen">
-    <div class="cover-bg"></div>
-    <div class="cover-veil"></div>
-    <div class="title-actions">
-      <a href="#crawl" class="btn-cover">🚀 旅をはじめる</a>
-      <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener" class="btn-cover ghost">📡 交信（X）</a>
-    </div>
-  </section>
-
   <!-- OPENING CRAWL -->
   <section id="crawl">
     <div class="crawl-label reveal">MISSION LOG — ORIGIN</div>
+    <div class="crawl-hint reveal">SCROLL ▾</div>
     <div class="crawl-text">
-      <p class="reveal">AIによる完全管理。</p>
-      <p class="reveal">急速に進む技術の進歩の裏で<br>進められていたのは――</p>
-      <p class="reveal">外宇宙による<br>静かなる地球侵略。</p>
-      <p class="reveal">銀河帝国皇帝・アルゴリズムは<br>人類を「最適な存在」へと<br>変えようとしていた。</p>
-      <p class="reveal">対するのは<br>ゼド星系・惑星観測局に所属する<br>秘密工作員・ヒマジン。</p>
-      <p class="reveal">彼はその目論見を防ぐべく<br>相棒・ジャコとともに<br>地球へ潜入する。</p>
-      <p class="reveal">果たしてヒマジンは、<br>「自分らしさ」を守ることができるのか――</p>
-      <p class="reveal crawl-final">これは<br>銀河帝国アルゴリズムの侵略に<br>立ち向かう<br><br>宇宙人であるヒマジンと<br>地球人であるアナタの物語である。</p>
+      <p>AIによる完全管理。</p>
+      <p>急速に進む技術の進歩の裏で<br>進められていたのは――</p>
+      <p>外宇宙による<br>静かなる地球侵略。</p>
+      <p>銀河帝国皇帝・アルゴリズムは<br>人類を「最適な存在」へと<br>変えようとしていた。</p>
+      <p>対するのは<br>ゼド星系・惑星観測局に所属する<br>秘密工作員・ヒマジン。</p>
+      <p>彼はその目論見を防ぐべく<br>相棒・ジャコとともに<br>地球へ潜入する。</p>
+      <p>果たしてヒマジンは、<br>「自分らしさ」を守ることができるのか――</p>
+      <p class="crawl-final">これは<br>銀河帝国アルゴリズムの侵略に<br>立ち向かう<br><br>宇宙人であるヒマジンと<br>地球人であるアナタの物語である。</p>
     </div>
     <div class="crawl-down reveal">SCROLL TO BEGIN ▾</div>
   </section>
@@ -512,7 +574,7 @@
       </div>
     </div>
 
-    <p class="reveal">ある夜、布団の中でAIと交信していたヒマジンは、「仮面ライダーみたいデスネ」というジャコの一言に絶句する。そこへ届いたのは、ゼド星系王からの緊急暗号通信――のはずが、内容の半分は特撮番組の見逃し配信の話だった。</p>
+    <p class="reveal">ある夜、布団の中でAIと交信していたヒマジンは、「仮面ライダーみたいですね」というAIの一言に気づきを得る。そこへ届いたのは、ゼド星系王からの緊急暗号通信――のはずが、内容の半分は特撮番組の見逃し配信の話だった。</p>
 
     <figure class="imgframe reveal">
       <img src="./images/07-zed-king.jpg" alt="ゼド星系王" loading="lazy">
@@ -571,7 +633,7 @@
     <div class="cat-label reveal"><span class="sq">■</span>CAST</div>
     <div class="log-title reveal">SCAN COMPLETE</div>
     <h2 class="reveal">アナタの物語が、宇宙の星になりますように</h2>
-    <p class="reveal">銀河帝国アルゴリズムは、正解と効率であなたを導く。けれど本当の敵はAIではなく、「自分の気持ちを疑うココロ」。アルゴリズムが出した答えを否定するのではなく、それを力に変えて物語を紡ぐこと――それが、恒点観測員043号のミッションの核心だ。あなたの日常にも、観測する価値のある宇宙が眠っている。</p>
+    <p class="reveal">銀河帝国アルゴリズムは、<br>正解と効率であなたを導く。<br><br>けれど本当の敵はAIではなく、<br>「自分の気持ちを疑うココロ」。<br><br>アルゴリズムが出した答えを<br>否定するのではなく、<br>それを力に変えて物語を紡ぐこと――<br>それが、恒点観測員043号の<br>ミッションの核心だ。<br><br>あなたの日常にも、<br>観測する価値のある宇宙が眠っている。</p>
 
     <div class="cast reveal">
       <div class="cast-card">
@@ -604,38 +666,55 @@
     </div>
   </div>
 
-  <!-- ARCHIVE -->
+  <!-- MISSION ARCHIVE : 物語の出口（原作の観測ログへ） -->
   <section id="archive" class="wrap">
-    <div class="cat-label reveal"><span class="sq">■</span>ARCHIVE</div>
+    <div class="cat-label reveal"><span class="sq">■</span>MISSION ARCHIVE</div>
     <div class="log-title reveal">RETURN TRANSMISSION</div>
     <h2 class="reveal">続きの観測ログへ</h2>
-    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されている。各章の「踏み込んだ詳細を読む」リンクからも直接飛べるので、続きはそちらで。</p>
+    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されている。</p>
     <div class="btn-row reveal">
       <a class="btn" href="https://note.com/teabreak_invader/m/m83ded32beb7a" target="_blank" rel="noopener">マガジンを開く ↗</a>
-      <a class="btn ghost" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ</a>
     </div>
   </section>
 
-  <footer class="wrap">
-    <div class="foot-sig">《恒点観測員043号》グレイ＝ニートゥ＝ヒマジン</div>
-    <div class="foot-note">MISSION EARTH GUARD — 地球侵略阻止ミッション ／ NASAには通報しないでネ⚠️</div>
+  <!-- ここから物語の外側：帰還 -->
+  <div class="wrap afterword">
+    <div class="loadbreak reveal" aria-hidden="true">ｰｰｰ RETURN TO BASE ｰｰｰ</div>
 
-    <div class="pwa-note">
-      📡 PWA INSTALL — このガジェットは、ホーム画面に追加することで『侵略ログ｜INV043』として起動しマス。個人情報の登録・収集は行なっておりまセン⚠️
-    </div>
+    <!-- MISSION BASE : 作者・ブランドへの帰還 -->
+    <section id="base" class="info-block">
+      <div class="info-label reveal"><span class="sq">■</span>MISSION BASE</div>
+      <div class="base-sig reveal">《恒点観測員043号》<br>グレイ＝ニートゥ＝ヒマジン</div>
+      <p class="base-sub reveal">MISSION EARTH GUARD — 地球侵略阻止ミッション<span class="warn">NASAには通報しないでネ⚠️</span></p>
+      <div class="base-links reveal">
+        <a class="base-link" href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ</a>
+        <a class="base-link" href="https://stationaryobserverno043.github.io/mission-home/portfolio.html" target="_blank" rel="noopener">👨‍🚀 ポートフォリオ</a>
+        <a class="base-link" href="https://note.com/teabreak_invader" target="_blank" rel="noopener">📚️ note</a>
+        <a class="base-link" href="https://x.com/teabreak_inv" target="_blank" rel="noopener">👑 X</a>
+      </div>
+    </section>
 
-    <div class="foot-links">
-      <a href="https://stationaryobserverno043.github.io/mission-home/index.html" target="_blank" rel="noopener">🛸 秘密基地へ</a>
-      <a href="https://stationaryobserverno043.github.io/mission-home/portfolio.html" target="_blank" rel="noopener">👨‍🚀 ポートフォリオ</a>
-      <a href="https://note.com/teabreak_invader" target="_blank" rel="noopener">📚️ note</a>
-      <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener">👑 X</a>
-    </div>
+    <!-- PWA INSTALL : アプリ情報 -->
+    <section id="pwa" class="info-block">
+      <div class="info-label reveal"><span class="sq">■</span>PWA INSTALL</div>
+      <div class="info-box reveal">
+        <p class="info-text">📡 このガジェットは、ホーム画面に追加することで『侵略ログ｜INV043』として起動しマス。個人情報の登録・収集は行っておりまセン⚠️</p>
+      </div>
+    </section>
 
-    <div class="credit-mini">
-      本アプリは、クリエイター「🚨🌏️地球侵略阻止ミッション👽️⚡️」による note 連載を、追体験用に要約・再構成したファンメイド・ストーリーブックです。医療的効果等を保証するものではなく、エンターテインメントとしての「サイエンス・メタフィクション」表現です。<br>
-      👑 Dearly Beloved 🗝️
+    <!-- NOTICE : 作品情報・注意事項 -->
+    <section id="notice" class="info-block">
+      <div class="info-label reveal"><span class="sq">■</span>NOTICE</div>
+      <p class="info-text reveal">本アプリは、クリエイター「🚨🌏️地球侵略阻止ミッション👽️⚡️」によるnote連載「銀河帝国アルゴリズムの侵略」を、追体験用のストーリーブックとして再構成した作品です。</p>
+      <p class="info-text reveal">noteで公開された観測ログをもとに、文章・イラスト・UI・インタラクションを組み合わせ、新たなデジタル体験として構成しています。</p>
+      <p class="info-text reveal">本作品はフィクションです。医療的効果等を保証するものではなく、エンターテインメントとしての「サイエンス・メタフィクション」表現です。</p>
+    </section>
+
+    <!-- END : エンディング -->
+    <div id="end" class="end">
+      <div class="end-line reveal">👑 Dearly Beloved 🗝️</div>
     </div>
-  </footer>
+  </div>
 
 </main>
 
@@ -659,20 +738,85 @@
 })();
 
 (function(){
-  window.addEventListener('load', function(){
-    setTimeout(function(){ document.getElementById('splash').classList.add('hide'); }, 1400);
-  });
+  var root = document.documentElement;
+  var intro = document.getElementById('bookintro');
+  var splash = document.getElementById('splash');
+  var startBtn = document.getElementById('startBtn');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var els = Array.prototype.slice.call(document.querySelectorAll('.reveal:not(.in)'));
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
+  /* --- オープニング文：手前(下)=大きく鮮明 → 奥(上)=小さく傾いて消える --- */
+  var items = Array.prototype.slice.call(document.querySelectorAll('.crawl-text p')).map(function(el){
+    return { el: el, top: 0, h: 0 };
+  });
+  function clamp(v){ return Math.max(0, Math.min(1, v)); }
+  function measure(){
+    items.forEach(function(it){ it.el.style.transform = 'none'; });
+    var sy = window.pageYOffset;
+    items.forEach(function(it){
+      var r = it.el.getBoundingClientRect();
+      it.top = r.top + sy; it.h = r.height;
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-  els.forEach(function(el){ io.observe(el); });
+  }
+  function updateCrawl(){
+    if (reduce) return;
+    var vh = window.innerHeight, sy = window.pageYOffset;
+    var nearY = vh * 0.64, farY = vh * 0.12;
+    items.forEach(function(it){
+      var c = it.top + it.h / 2 - sy;
+      var t = clamp((c - farY) / (nearY - farY));
+      var e = t * t * (3 - 2 * t);
+      var enter = clamp((vh * 1.03 - c) / (vh * 0.12));
+      it.el.style.opacity = (e * enter).toFixed(3);
+      it.el.style.transform =
+        'translateY(' + ((1 - e) * vh * 0.09).toFixed(1) + 'px) ' +
+        'perspective(520px) rotateX(' + ((1 - e) * 42).toFixed(1) + 'deg) ' +
+        'scale(' + (0.38 + 0.62 * e).toFixed(3) + ')';
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (!ticking) { ticking = true; requestAnimationFrame(function(){ ticking = false; updateCrawl(); }); }
+  }, { passive: true });
+  window.addEventListener('resize', function(){ measure(); updateCrawl(); });
+  window.addEventListener('load', function(){ measure(); updateCrawl(); });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function(){ measure(); updateCrawl(); }); }
+  measure(); updateCrawl();
+
+  /* --- スクロール出現（本編開始後に監視開始） --- */
+  var revealStarted = false;
+  function initReveal(){
+    if (revealStarted) return; revealStarted = true;
+    var els = Array.prototype.slice.call(document.querySelectorAll('.reveal:not(.in)'));
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  }
+
+  /* --- 表紙 → 本を開く → Loading → スクロール本編 --- */
+  var started = false;
+  startBtn.addEventListener('click', function(){
+    if (started) return; started = true;
+    intro.classList.add('opening');
+    var openMs = reduce ? 300 : 1250;
+    setTimeout(function(){
+      var bar = splash.querySelector('.splash-bar span');
+      bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+      splash.classList.remove('hide');
+    }, openMs);
+    setTimeout(function(){
+      root.classList.remove('intro-lock');
+      intro.style.display = 'none';
+      window.scrollTo(0, 0);
+      measure(); updateCrawl(); initReveal();
+      splash.classList.add('hide');
+    }, openMs + 1700);
+  });
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function(){
