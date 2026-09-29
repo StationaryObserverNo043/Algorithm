@@ -68,10 +68,10 @@
   /* ---------- splash ---------- */
   #splash{
     position: fixed; inset:0; z-index: 999;
-    background: var(--void);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center; gap: 10px;
     transition: opacity .9s ease, visibility .9s ease;
+    pointer-events:none;
   }
   #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
   .splash-mark{ font-family: var(--serif); font-size: 13px; letter-spacing:.3em; color: var(--blue-dim); }
@@ -201,9 +201,14 @@
   /* 表紙の下にある「最初のページ」 */
   .book-page{
     position:absolute; inset:0;
-    background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 8%), linear-gradient(135deg, #0d1a40, #09122e);
+    background-color:#0c1e46;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 8%),
+      url('./images/11-paper-texture.jpg');
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
   }
-  .book-page::before{ content:""; position:absolute; inset:18px; border:1px solid rgba(233,220,195,.16); }
   /* 厚みのある表紙（前面・背面・小口をZ軸に積む） */
   .book-cover{
     position:absolute; inset:0;
@@ -225,14 +230,29 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏（見返し）：枠付きページ全体が見えるように contain */
+  .book-cover .back{ /* 表紙の裏＝見返し。中に「枠付き」「無地」の2枚を重ね、境界なくクロスフェード */
     transform: rotateY(180deg) translateZ(9px);
-    background-color: #0c1e46;
+    background-color:#0c1e46;
+  }
+  .book-cover .back .ep-layer{
+    position:absolute; inset:0;
+    background-color:#0c1e46;
+    background-repeat:no-repeat; background-position:center;
+    transition: opacity 1.5s ease;
+  }
+  .book-cover .back .ep-art{
     background-image: url('./images/10-endpaper-framed.jpg');
     background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    opacity:1;
   }
+  .book-cover .back .ep-blank{
+    background-image: url('./images/11-paper-texture.jpg');
+    background-size: cover;
+    opacity:0;
+  }
+  .book-cover .back.blank .ep-art{ opacity:0; }
+  .book-cover .back.blank .ep-blank{ opacity:1; }
+  @media (prefers-reduced-motion: reduce){ .book-cover .back .ep-layer{ transition: opacity .4s ease; } }
   .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
   .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
   .book-cover .edge.r{ top:0; bottom:0; left:calc(100% - 9px); width:18px; transform: rotateY(90deg); }
@@ -271,17 +291,6 @@
     .book-cover{ transition: opacity .4s ease; }
     #bookintro.opening .book-cover{ transform:none; opacity:0; }
   }
-
-  /* ---------- endpaper return（TITLEへ戻る途中、見返しへじんわり） ---------- */
-  #endpaperReturn{
-    position:fixed; inset:0; z-index:940; opacity:0; pointer-events:none;
-    transition: opacity 1.5s ease;
-    background-color: #0c1e46;
-    background-image: url('./images/10-endpaper-framed.jpg');
-    background-size: contain; background-repeat:no-repeat; background-position:center;
-  }
-  #endpaperReturn.show{ opacity:1; }
-  @media (prefers-reduced-motion: reduce){ #endpaperReturn{ transition: opacity .4s ease; } }
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -484,10 +493,12 @@
         <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener" class="btn-cover ghost">📡 交信（X）</a>
       </div>
     </div>
-    <div class="face back"></div>
+    <div class="face back">
+      <div class="ep-layer ep-art"></div>
+      <div class="ep-layer ep-blank"></div>
+    </div>
   </div>
 </div>
-<div id="endpaperReturn" aria-hidden="true"></div>
 
 <header id="topnav">
   <div class="nav-inner">
@@ -598,7 +609,7 @@
 
     <div class="msg alien reveal">
       <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">ワタシたちは今、<br><strong>銀河帝国アルゴリズム</strong>による<br>地球侵略を、静かに阻止しようとしていマス。</div></div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">ワタシたちは今、<br><strong>銀河帝国アルゴリズム</strong>による<br>地球侵略を、<br>静かに阻止しようとしていマス。</div></div>
     </div>
 
     <div class="msg jako reveal">
@@ -615,7 +626,7 @@
       <div class="ol-tag">OBSERVATION LOG 00</div>
       <div class="ol-title">恒点観測員043号、地球潜入の記録</div>
       <p class="dim">ヒマジンの正体と、このミッションが始まった経緯。</p>
-      <a class="ol-link" href="https://note.com/teabreak_invader/n/nc7efd66075c8" target="_blank" rel="noopener">踏み込んだ詳細を読む ↗</a>
+      <a class="ol-link" href="https://note.com/teabreak_invader/n/nc7efd66075c8" target="_blank" rel="noopener">観測ログを読む ↗</a>
     </div>
   </section>
 
@@ -647,7 +658,7 @@
       <div class="ol-tag">OBSERVATION LOG 01</div>
       <div class="ol-title">ワタシは、仮面ライダーだった！？</div>
       <p class="dim">〜銀河帝国アルゴリズムの影〜　全編はこちら。</p>
-      <a class="ol-link" href="https://note.com/teabreak_invader/n/n430098212108" target="_blank" rel="noopener">踏み込んだ詳細を読む ↗</a>
+      <a class="ol-link" href="https://note.com/teabreak_invader/n/n430098212108" target="_blank" rel="noopener">観測ログを読む ↗</a>
     </div>
   </section>
 
@@ -679,7 +690,7 @@
       <div class="ol-tag">OBSERVATION LOG 02</div>
       <div class="ol-title">こどもにイライラしてしまう――</div>
       <p class="dim">AI時代の理想の育児とは？　全編はこちら。</p>
-      <a class="ol-link" href="https://note.com/teabreak_invader/n/n0b266a0f7ec1" target="_blank" rel="noopener">踏み込んだ詳細を読む ↗</a>
+      <a class="ol-link" href="https://note.com/teabreak_invader/n/n0b266a0f7ec1" target="_blank" rel="noopener">観測ログを読む ↗</a>
     </div>
   </section>
 
@@ -868,78 +879,78 @@
   var splashTitleEl = splash.querySelector('.splash-title');
   var OPEN_MSG = splashTitleEl.textContent;
   var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
-  /* --- 表紙が開く → 見返しをじんわり保持 → Loading → 本編へ（TITLEへ戻る動きと対称） --- */
+  var backEl = intro.querySelector('.book-cover .back');
+  var paperEl = document.getElementById('paperbg');
+
+  function showLoading(msg){
+    splashTitleEl.textContent = msg;
+    var bar = splash.querySelector('.splash-bar span');
+    bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+    splash.classList.remove('hide');
+  }
+  function hideLoading(){ splash.classList.add('hide'); }
+
+  /* --- 旅をはじめる：表紙が開く（影から見返しが現れる）→ 見返しを保持 →
+         同じ面のまま無地ページへクロスフェード → その無地ページの上でLoading →
+         そのままのページで本編スクロールへ --- */
   var started = false;
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
-    var paper = document.getElementById('paperbg');
-    var epr = document.getElementById('endpaperReturn');
-    var openAnimMs = reduce ? 300 : 3400; /* 表紙が開く時間（.book-cover の transition と同じ） */
-    var holdMs = reduce ? 250 : 1400;      /* 見返しをじんわり見せる時間 */
-    var loadMs = reduce ? 300 : 1600;      /* Loading表示時間 */
+    var openAnimMs = reduce ? 300 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
+    var holdMs     = reduce ? 250 : 1300; /* 見返しをじんわり見せる時間 */
+    var loadMs     = reduce ? 300 : 1700; /* 無地ページの上でLoadingを見せる時間（crossfade完了を含む） */
 
-    intro.classList.add('opening');
-
-    setTimeout(function(){
-      epr.classList.add('show'); /* 見返しがじんわり浮かび上がる */
-    }, openAnimMs);
+    backEl.classList.remove('blank'); /* 見返し（枠付き）から開始 */
+    intro.classList.add('opening');   /* 表紙が開く。影の中から見返しが現れる */
 
     setTimeout(function(){
-      splashTitleEl.textContent = OPEN_MSG;
-      var bar = splash.querySelector('.splash-bar span');
-      bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
-      splash.classList.remove('hide');
+      backEl.classList.add('blank');  /* 同じ面のまま、無地ページへじんわりクロスフェード */
+      showLoading(OPEN_MSG);          /* その無地ページの上にLoadingが浮かぶ */
     }, openAnimMs + holdMs);
 
     setTimeout(function(){
+      hideLoading();
       root.classList.remove('intro-lock');
+      paperEl.classList.add('show');  /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
       intro.style.display = 'none';
-      epr.classList.remove('show');
       jumpTop();
       measure(); updateCrawl(); initReveal();
-      splash.classList.add('hide');
-      paper.classList.add('show'); /* じんわり紙の質感へ */
     }, openAnimMs + holdMs + loadMs);
   });
 
-  /* --- TITLE：見返しへじんわり戻る → Loading（専用メッセージ）→ 本を閉じてタイトルへ --- */
+  /* --- TITLE：本編の無地ページのまま戻る → 同じページの上でLoading →
+         同じ面が見返し（枠付き）へクロスフェード → 表紙が閉じて影の中へ --- */
   document.getElementById('titleBtn').addEventListener('click', function(){
     if (!started || closing) return; closing = true;
-    var paper = document.getElementById('paperbg');
-    var epr = document.getElementById('endpaperReturn');
-    var returnMs = reduce ? 300 : 1500;
-    var loadMs = reduce ? 300 : 1600;
-    var closeAnimMs = reduce ? 400 : 3600;
+    var loadMs     = reduce ? 300 : 1700; /* 無地ページの上でLoading */
+    var blankHold  = reduce ? 250 : 1300; /* 見返しへ戻ってから、閉じ始めるまでの間 */
+    var closeAnimMs= reduce ? 400 : 3500; /* 表紙が閉じる時間 */
 
-    paper.classList.remove('show');
-    epr.classList.add('show');
+    var cover = intro.querySelector('.book-cover');
+    cover.style.transition = 'none';
+    backEl.classList.add('blank');    /* 今読んでいるのと同じ無地ページを表示 */
+    intro.classList.add('opening');   /* 開いた状態（背面＝無地ページが見える）を維持 */
+    intro.style.display = '';
+    void cover.offsetWidth;
+    cover.style.transition = '';
+    root.classList.add('intro-lock');
+    paperEl.classList.remove('show'); /* 本編側は同じ絵柄なので、切替は見えない */
+
+    showLoading(CLOSE_MSG);
 
     setTimeout(function(){
-      splashTitleEl.textContent = CLOSE_MSG;
-      var bar = splash.querySelector('.splash-bar span');
-      bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
-      splash.classList.remove('hide');
-    }, returnMs);
+      hideLoading();
+      backEl.classList.remove('blank'); /* 同じ面のまま、見返し（枠付き）へじんわり戻る */
+    }, loadMs);
 
     setTimeout(function(){
-      splash.classList.add('hide');
-      epr.classList.remove('show');
+      intro.classList.remove('opening'); /* 表紙が閉じ、見返しごと影の中へ */
+    }, loadMs + blankHold);
 
-      var cover = intro.querySelector('.book-cover');
-      cover.style.transition = 'none';
-      intro.classList.add('opening'); /* 見返しが見えている状態を維持 */
-      intro.style.display = '';
-      void cover.offsetWidth;
-      cover.style.transition = '';
-      root.classList.add('intro-lock');
-      requestAnimationFrame(function(){ intro.classList.remove('opening'); }); /* 表紙を閉じる */
-
-      setTimeout(function(){
-        jumpTop(); measure(); updateCrawl();
-        splashTitleEl.textContent = OPEN_MSG;
-        started = false; closing = false;
-      }, closeAnimMs);
-    }, returnMs + loadMs);
+    setTimeout(function(){
+      jumpTop(); measure(); updateCrawl();
+      started = false; closing = false;
+    }, loadMs + blankHold + closeAnimMs);
   });
 
   if ('serviceWorker' in navigator) {
