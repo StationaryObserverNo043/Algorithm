@@ -147,8 +147,8 @@
   p{ font-size: 15px; line-height: 1.95; color: var(--ink); margin: 0 0 20px; }
   .dim{ color: var(--ink-dim); }
 
-  .reveal{ opacity:0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
-  .reveal.in{ opacity:1; transform:none; }
+  .reveal, .gate-cue{ opacity:0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in, .gate-cue.in{ opacity:1; transform:none; }
   @media (prefers-reduced-motion: reduce){ .reveal{ transition:none; opacity:1; transform:none; } html{ scroll-behavior:auto; } }
 
   /* ---------- opening crawl ---------- */
@@ -183,6 +183,7 @@
   .crawl-down{
     margin-top: 70px;
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
+    transition: opacity 1s ease, transform 1s ease;
   }
 
   .btn{
@@ -197,6 +198,7 @@
   /* ---------- title screen (独立した本の表紙) ---------- */
   html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
   html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
+  html.scroll-lock, html.scroll-lock body{ overflow:hidden; height:100%; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
   /* 表紙の下にある「最初のページ」 */
   .book-page{
@@ -343,11 +345,13 @@
   /* ---------- starfield (subtle) ---------- */
   #starfield{
     position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
+    opacity:0; transition: opacity 2.2s ease;
     background:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
       linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%);
   }
+  #starfield.show{ opacity:1; }
   .star{
     position:absolute; border-radius:50%; background:#dff2ff;
     animation: twinkle ease-in-out infinite;
@@ -519,7 +523,7 @@
   <!-- OPENING CRAWL -->
   <section id="crawl">
     <div class="crawl-label reveal">MISSION LOG — ORIGIN</div>
-    <div class="crawl-hint reveal">SCROLL ▾</div>
+    <div class="crawl-hint gate-cue" id="scrollGate">SCROLL ▾</div>
     <div class="crawl-text">
       <p>AIによる完全管理。</p>
       <p>急速に進む技術の進歩の裏で<br>進められていたのは――</p>
@@ -881,6 +885,7 @@
   var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
   var backEl = intro.querySelector('.book-cover .back');
   var paperEl = document.getElementById('paperbg');
+  var starfieldEl = document.getElementById('starfield');
 
   function showLoading(msg){
     splashTitleEl.textContent = msg;
@@ -910,11 +915,28 @@
 
     setTimeout(function(){
       hideLoading();
-      root.classList.remove('intro-lock');
-      paperEl.classList.add('show');  /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
-      intro.style.display = 'none';
+
+      /* 重い処理は、まだ本を閉じたまま（非表示）の間に済ませておく */
       jumpTop();
       measure(); updateCrawl(); initReveal();
+
+      requestAnimationFrame(function(){
+        root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
+        root.classList.remove('intro-lock');
+        paperEl.classList.add('show');       /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
+        intro.style.display = 'none';
+        starfieldEl.classList.add('show');   /* 徐々に星が灯る */
+
+        var gate = document.getElementById('scrollGate');
+        var litMs  = reduce ? 200 : 1100; /* 星が灯るのを待つ */
+        var glideMs= reduce ? 150 : 900;  /* ボタンがスーッと出現する時間 */
+        setTimeout(function(){
+          if (gate) gate.classList.add('in'); /* スーッとボタンが出現 */
+          setTimeout(function(){
+            root.classList.remove('scroll-lock'); /* ここからスクロール可能に */
+          }, glideMs);
+        }, litMs);
+      });
     }, openAnimMs + holdMs + loadMs);
   });
 
@@ -933,8 +955,12 @@
     intro.style.display = '';
     void cover.offsetWidth;
     cover.style.transition = '';
+    root.classList.remove('scroll-lock');
     root.classList.add('intro-lock');
     paperEl.classList.remove('show'); /* 本編側は同じ絵柄なので、切替は見えない */
+    starfieldEl.classList.remove('show');
+    var gateReset = document.getElementById('scrollGate');
+    if (gateReset) gateReset.classList.remove('in');
 
     showLoading(CLOSE_MSG);
 
