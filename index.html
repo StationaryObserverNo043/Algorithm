@@ -613,12 +613,12 @@
 
     <div class="msg alien reveal">
       <div class="avatar">👽️</div>
-      <div class="content"><div class="name">ヒマジン</div><div class="bubble">ワタシたちは今、<br><strong>銀河帝国アルゴリズム</strong>による<br>地球侵略を、<br>静かに阻止しようとしていマス。</div></div>
+      <div class="content"><div class="name">ヒマジン</div><div class="bubble">ワタシたちは今、<br><strong>銀河帝国アルゴリズム</strong>による<br>地球侵略を、<br>静かに阻止しようとしていマス⚠️⚡️</div></div>
     </div>
 
     <div class="msg jako reveal">
       <div class="avatar">🤖</div>
-      <div class="content"><div class="name">ジャコ</div><div class="bubble">『彼らは、AIが導く「正解」こそ<br>人類が幸せになる唯一の方法と<br>信じていマス。<br><br>それは、均一で、平等で――<br><br>でも、「自分らしさ」を<br>見失ってしまう世界……。』</div></div>
+      <div class="content"><div class="name">ジャコ</div><div class="bubble">『彼らは、AIが導く「正解」こそ<br>人類が幸せになる唯一の方法と<br>信じていマス。<br><br>それは、均一で、平等で――<br><br>でも、「自分らしさ」を<br>見失ってしまう世界……🧬』</div></div>
     </div>
 
     <div class="msg alien reveal">
@@ -902,41 +902,42 @@
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
     var openAnimMs = reduce ? 300 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
-    var holdMs     = reduce ? 250 : 1300; /* 見返しをじんわり見せる時間 */
-    var loadMs     = reduce ? 300 : 1700; /* 無地ページの上でLoadingを見せる時間（crossfade完了を含む） */
+    var holdMs     = reduce ? 200 : 600;  /* 開いた直後、枠付きページを少し見せる時間 */
+    var loadMs     = reduce ? 300 : 1700; /* 枠付きページの上にLoadingを重ねて見せる時間 */
+    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、枠がじんわり消えて無地になる時間 */
 
     backEl.classList.remove('blank'); /* 見返し（枠付き）から開始 */
     intro.classList.add('opening');   /* 表紙が開く。影の中から見返しが現れる */
 
     setTimeout(function(){
-      backEl.classList.add('blank');  /* 同じ面のまま、無地ページへじんわりクロスフェード */
-      showLoading(OPEN_MSG);          /* その無地ページの上にLoadingが浮かぶ */
+      showLoading(OPEN_MSG); /* 枠付きページはそのまま、その上にLoadingを重ねる */
     }, openAnimMs + holdMs);
 
     setTimeout(function(){
       hideLoading();
+      backEl.classList.add('blank'); /* Loading終了と共に、枠がじんわり消えて無地に */
 
       /* 重い処理は、まだ本を閉じたまま（非表示）の間に済ませておく */
       jumpTop();
       measure(); updateCrawl(); initReveal();
 
-      requestAnimationFrame(function(){
-        root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
-        root.classList.remove('intro-lock');
-        paperEl.classList.add('show');       /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
-        intro.style.display = 'none';
-        starfieldEl.classList.add('show');   /* 徐々に星が灯る */
+      setTimeout(function(){
+        requestAnimationFrame(function(){
+          root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
+          root.classList.remove('intro-lock');
+          paperEl.classList.add('show');       /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
+          intro.style.display = 'none';
+          starfieldEl.classList.add('show');   /* 星がともる */
 
-        var gate = document.getElementById('scrollGate');
-        var litMs  = reduce ? 200 : 1100; /* 星が灯るのを待つ */
-        var glideMs= reduce ? 150 : 900;  /* ボタンがスーッと出現する時間 */
-        setTimeout(function(){
-          if (gate) gate.classList.add('in'); /* スーッとボタンが出現 */
+          var gate = document.getElementById('scrollGate');
           setTimeout(function(){
-            root.classList.remove('scroll-lock'); /* ここからスクロール可能に */
-          }, glideMs);
-        }, litMs);
-      });
+            if (gate) gate.classList.add('in'); /* ボタンが出現 */
+          }, reduce ? 80 : 180);
+          setTimeout(function(){
+            root.classList.remove('scroll-lock'); /* 本編スクロール可能に */
+          }, reduce ? 150 : 450);
+        });
+      }, fadeMs);
     }, openAnimMs + holdMs + loadMs);
   });
 
