@@ -232,7 +232,7 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏＝見返し。中に「枠付き」「無地」の2枚を重ね、境界なくクロスフェード */
+  .book-cover .back{ /* 表紙の裏＝見返し。中に「枠付き」「無地」の2枚を重ね、同じ面のままクロスフェード */
     transform: rotateY(180deg) translateZ(9px);
     background-color:#0c1e46;
   }
@@ -882,9 +882,9 @@
   var splashTitleEl = splash.querySelector('.splash-title');
   var OPEN_MSG = splashTitleEl.textContent;
   var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
-  var backEl = intro.querySelector('.book-cover .back');
   var paperEl = document.getElementById('paperbg');
   var starfieldEl = document.getElementById('starfield');
+  var backEl = intro.querySelector('.book-cover .back');
 
   function showLoading(msg){
     splashTitleEl.textContent = msg;
@@ -900,13 +900,13 @@
   var started = false;
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
-    var openAnimMs = reduce ? 300 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
-    var holdMs     = reduce ? 200 : 600;  /* 開いた直後、枠付きページを少し見せる時間 */
-    var loadMs     = reduce ? 300 : 1700; /* 枠付きページの上にLoadingを重ねて見せる時間 */
-    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、枠がじんわり消えて無地になる時間 */
+    var openAnimMs = reduce ? 500 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
+    var holdMs     = 700;                 /* 開いた直後、枠付きページを見せる時間 */
+    var loadMs     = 1700;                /* 枠付きページの上にLoadingを重ねて見せる時間 */
+    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、枠がじんわり無地へ（CSSのcrossfadeと同じ長さ） */
 
-    backEl.classList.remove('blank'); /* 見返し（枠付き）から開始 */
-    intro.classList.add('opening');   /* 表紙が開く。影の中から見返しが現れる */
+    backEl.classList.remove('blank');  /* 見返し（枠付き）から開始 */
+    intro.classList.add('opening');    /* 表紙が開く。影の中から見返しが現れる */
 
     setTimeout(function(){
       showLoading(OPEN_MSG); /* 枠付きページはそのまま、その上にLoadingを重ねる */
@@ -944,39 +944,40 @@
          同じ面が見返し（枠付き）へクロスフェード → 表紙が閉じて影の中へ --- */
   document.getElementById('titleBtn').addEventListener('click', function(){
     if (!started || closing) return; closing = true;
-    var loadMs     = reduce ? 300 : 1700; /* 無地ページの上でLoading */
-    var blankHold  = reduce ? 250 : 1300; /* 見返しへ戻ってから、閉じ始めるまでの間 */
-    var closeAnimMs= reduce ? 400 : 3500; /* 表紙が閉じる時間 */
+    var loadMs     = 1700;                /* 本編と同じ無地ページの上でLoading */
+    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、無地から枠付き見返しへ */
+    var holdMs2    = 700;                 /* 見返しに戻ってから、表紙が閉じ始めるまで少し見せる */
+    var closeAnimMs= reduce ? 500 : 3500; /* 表紙が閉じる時間 */
 
     var cover = intro.querySelector('.book-cover');
     cover.style.transition = 'none';
-    backEl.classList.add('blank');    /* 今読んでいるのと同じ無地ページを表示 */
-    intro.classList.add('opening');   /* 開いた状態（背面＝無地ページが見える）を維持 */
+    backEl.classList.add('blank');  /* 今読んでいるのと同じ無地ページを表示 */
+    intro.classList.add('opening'); /* 開いた状態を即座に表示 */
     intro.style.display = '';
     void cover.offsetWidth;
     cover.style.transition = '';
     root.classList.remove('scroll-lock');
     root.classList.add('intro-lock');
-    paperEl.classList.remove('show'); /* 本編側は同じ絵柄なので、切替は見えない */
+    paperEl.classList.remove('show');
     starfieldEl.classList.remove('show');
     var gateReset = document.getElementById('scrollGate');
     if (gateReset) gateReset.classList.remove('in');
 
-    showLoading(CLOSE_MSG);
+    showLoading(CLOSE_MSG); /* 無地ページの上にLoadingを重ねる */
 
     setTimeout(function(){
       hideLoading();
-      backEl.classList.remove('blank'); /* 同じ面のまま、見返し（枠付き）へじんわり戻る */
+      backEl.classList.remove('blank'); /* Loading終了と共に、枠付き見返しへじんわり戻る */
     }, loadMs);
 
     setTimeout(function(){
       intro.classList.remove('opening'); /* 表紙が閉じ、見返しごと影の中へ */
-    }, loadMs + blankHold);
+    }, loadMs + fadeMs + holdMs2);
 
     setTimeout(function(){
       jumpTop(); measure(); updateCrawl();
       started = false; closing = false;
-    }, loadMs + blankHold + closeAnimMs);
+    }, loadMs + fadeMs + holdMs2 + closeAnimMs);
   });
 
   if ('serviceWorker' in navigator) {
