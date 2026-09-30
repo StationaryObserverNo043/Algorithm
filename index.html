@@ -199,6 +199,8 @@
   html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
   html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
   html.scroll-lock, html.scroll-lock body{ overflow:hidden; height:100%; }
+  main{ transition: opacity 1.1s ease; }
+  html.content-hidden main{ opacity:0; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
   /* 表紙の下にある「最初のページ」 */
   .book-page{
@@ -232,29 +234,14 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏＝見返し。中に「枠付き」「無地」の2枚を重ね、同じ面のままクロスフェード */
+  .book-cover .back{ /* 表紙の裏＝最初のページと同じ無地の紙（枠付きページは別レイヤーのフラット表示で担当） */
     transform: rotateY(180deg) translateZ(9px);
     background-color:#0c1e46;
-  }
-  .book-cover .back .ep-layer{
-    position:absolute; inset:0;
-    background-color:#0c1e46;
-    background-repeat:no-repeat; background-position:center;
-    transition: opacity 1.5s ease;
-  }
-  .book-cover .back .ep-art{
-    background-image: url('./images/10-endpaper-framed.jpg');
-    background-size: contain;
-    opacity:1;
-  }
-  .book-cover .back .ep-blank{
     background-image: url('./images/11-paper-texture.jpg');
     background-size: cover;
-    opacity:0;
+    background-repeat: no-repeat;
+    background-position: center;
   }
-  .book-cover .back.blank .ep-art{ opacity:0; }
-  .book-cover .back.blank .ep-blank{ opacity:1; }
-  @media (prefers-reduced-motion: reduce){ .book-cover .back .ep-layer{ transition: opacity .4s ease; } }
   .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
   .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
   .book-cover .edge.r{ top:0; bottom:0; left:calc(100% - 9px); width:18px; transform: rotateY(90deg); }
@@ -292,6 +279,17 @@
   @media (prefers-reduced-motion: reduce){
     .book-cover{ transition: transform .3s linear; }
   }
+
+  /* ---------- endpaper flash（枠付き見返し：確実に描画されるフラット表示） ---------- */
+  #endpaperFlash{
+    position:fixed; inset:0; z-index:945; opacity:0; pointer-events:none;
+    transition: opacity 1.5s ease;
+    background-color:#0c1e46;
+    background-image: url('./images/10-endpaper-framed.jpg');
+    background-size: contain; background-repeat:no-repeat; background-position:center;
+  }
+  #endpaperFlash.show{ opacity:1; }
+  @media (prefers-reduced-motion: reduce){ #endpaperFlash{ transition: opacity .4s ease; } }
 
   /* ---------- marquee ---------- */
   .marquee{
@@ -504,12 +502,10 @@
         <a href="https://x.com/teabreak_inv" target="_blank" rel="noopener" class="btn-cover ghost">📡 交信（X）</a>
       </div>
     </div>
-    <div class="face back">
-      <div class="ep-layer ep-art"></div>
-      <div class="ep-layer ep-blank"></div>
-    </div>
+    <div class="face back"></div>
   </div>
 </div>
+<div id="endpaperFlash" aria-hidden="true"></div>
 
 <header id="topnav">
   <div class="nav-inner">
@@ -897,7 +893,7 @@
   var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
   var paperEl = document.getElementById('paperbg');
   var starfieldEl = document.getElementById('starfield');
-  var backEl = intro.querySelector('.book-cover .back');
+  var flashEl = document.getElementById('endpaperFlash');
 
   function showLoading(msg){
     splashTitleEl.textContent = msg;
@@ -907,27 +903,27 @@
   }
   function hideLoading(){ splash.classList.add('hide'); }
 
-  /* --- 旅をはじめる：表紙が開く（影から見返しが現れる）→ 見返しを保持 →
-         同じ面のまま無地ページへクロスフェード → その無地ページの上でLoading →
-         そのままのページで本編スクロールへ --- */
+  /* --- 旅をはじめる：表紙が開く → 枠付きページ(Loading) → Loading終了で枠が消えて無地に →
+         星がじんわり浮かぶ → ボタンと導入文がじんわり出現 → スクロール可能に --- */
   var started = false;
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
     var openAnimMs = reduce ? 500 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
-    var holdMs     = 700;                 /* 開いた直後、枠付きページを見せる時間 */
     var loadMs     = 1700;                /* 枠付きページの上にLoadingを重ねて見せる時間 */
-    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、枠がじんわり無地へ（CSSのcrossfadeと同じ長さ） */
+    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、枠がじんわり消える時間 */
+    var starLeadMs = reduce ? 150 : 700;  /* 星を少し見せてから、本文とボタンを出す */
+    var contentMs  = reduce ? 200 : 1100; /* 本文・ボタンがじんわり出現する時間 */
 
-    backEl.classList.remove('blank');  /* 見返し（枠付き）から開始 */
-    intro.classList.add('opening');    /* 表紙が開く。影の中から見返しが現れる */
+    intro.classList.add('opening'); /* 表紙が開く */
 
     setTimeout(function(){
-      showLoading(OPEN_MSG); /* 枠付きページはそのまま、その上にLoadingを重ねる */
-    }, openAnimMs + holdMs);
+      flashEl.classList.add('show'); /* 枠付きページがじんわり浮かぶ */
+      showLoading(OPEN_MSG);         /* その上にLoadingを重ねる */
+    }, openAnimMs);
 
     setTimeout(function(){
       hideLoading();
-      backEl.classList.add('blank'); /* Loading終了と共に、枠がじんわり消えて無地に */
+      flashEl.classList.remove('show'); /* Loading終了と共に、枠がじんわり消えて無地に */
 
       /* 重い処理は、まだ本を閉じたまま（非表示）の間に済ませておく */
       jumpTop();
@@ -936,61 +932,62 @@
       setTimeout(function(){
         requestAnimationFrame(function(){
           root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
+          root.classList.add('content-hidden'); /* 本文・ボタンはまだ見せない */
           root.classList.remove('intro-lock');
-          paperEl.classList.add('show');       /* 本編側の同じ無地ページへ、そのまま引き継ぐ */
+          paperEl.classList.add('show');
           intro.style.display = 'none';
-          starfieldEl.classList.add('show');   /* 星がともる */
+          starfieldEl.classList.add('show');   /* じんわりと星が浮かぶ */
 
-          var gate = document.getElementById('scrollGate');
           setTimeout(function(){
-            if (gate) gate.classList.add('in'); /* ボタンが出現 */
-          }, reduce ? 80 : 180);
-          setTimeout(function(){
-            root.classList.remove('scroll-lock'); /* 本編スクロール可能に */
-          }, reduce ? 150 : 450);
+            requestAnimationFrame(function(){
+              root.classList.remove('content-hidden'); /* 本文（導入文）がじんわり出現 */
+              var gate = document.getElementById('scrollGate');
+              if (gate) gate.classList.add('in');       /* ボタンもじんわり出現 */
+              setTimeout(function(){
+                root.classList.remove('scroll-lock'); /* 本編スクロール可能に */
+              }, contentMs);
+            });
+          }, starLeadMs);
         });
       }, fadeMs);
-    }, openAnimMs + holdMs + loadMs);
+    }, openAnimMs + loadMs);
   });
 
-  /* --- TITLE：本編の無地ページのまま戻る → 同じページの上でLoading →
-         同じ面が見返し（枠付き）へクロスフェード → 表紙が閉じて影の中へ --- */
+  /* --- TITLE：画像・文章・ボタン・星がじんわり消えて無地ページに →
+         その無地ページから直接、表紙が閉じる（枠付きページは挟まない） --- */
   document.getElementById('titleBtn').addEventListener('click', function(){
     if (!started || closing) return; closing = true;
-    var loadMs     = 1700;                /* 本編と同じ無地ページの上でLoading */
-    var fadeMs     = reduce ? 200 : 1500; /* Loading終了と共に、無地から枠付き見返しへ */
-    var holdMs2    = 700;                 /* 見返しに戻ってから、表紙が閉じ始めるまで少し見せる */
-    var closeAnimMs= reduce ? 500 : 3500; /* 表紙が閉じる時間 */
+    var contentMs   = reduce ? 200 : 1100; /* 本文・ボタン・星がじんわり消える時間 */
+    var pauseMs     = reduce ? 100 : 400;  /* 無地ページで少し間を置く */
+    var closeAnimMs = reduce ? 500 : 3500; /* 表紙が閉じる時間 */
 
-    var cover = intro.querySelector('.book-cover');
-    cover.style.transition = 'none';
-    backEl.classList.add('blank');  /* 今読んでいるのと同じ無地ページを表示 */
-    intro.classList.add('opening'); /* 開いた状態を即座に表示 */
-    intro.style.display = '';
-    void cover.offsetWidth;
-    cover.style.transition = '';
-    root.classList.remove('scroll-lock');
-    root.classList.add('intro-lock');
-    paperEl.classList.remove('show');
-    starfieldEl.classList.remove('show');
     var gateReset = document.getElementById('scrollGate');
-    if (gateReset) gateReset.classList.remove('in');
-
-    showLoading(CLOSE_MSG); /* 無地ページの上にLoadingを重ねる */
-
-    setTimeout(function(){
-      hideLoading();
-      backEl.classList.remove('blank'); /* Loading終了と共に、枠付き見返しへじんわり戻る */
-    }, loadMs);
+    if (gateReset) gateReset.classList.remove('in'); /* ボタンが消える */
+    starfieldEl.classList.remove('show');            /* 星が消える */
+    root.classList.add('content-hidden');            /* 本文が無地ページへじんわり消える */
+    root.classList.add('scroll-lock');
 
     setTimeout(function(){
-      intro.classList.remove('opening'); /* 表紙が閉じ、見返しごと影の中へ */
-    }, loadMs + fadeMs + holdMs2);
+      var cover = intro.querySelector('.book-cover');
+      cover.style.transition = 'none';
+      intro.classList.add('opening'); /* 開いた状態（背面＝無地ページ）を即座に表示 */
+      intro.style.display = '';
+      void cover.offsetWidth;
+      cover.style.transition = '';
+      root.classList.add('intro-lock');
+      root.classList.remove('scroll-lock');
+      root.classList.remove('content-hidden'); /* 次回のために戻しておく（表示はintro-lockで隠れている） */
+      paperEl.classList.remove('show');
+      flashEl.classList.remove('show');
 
-    setTimeout(function(){
-      jumpTop(); measure(); updateCrawl();
-      started = false; closing = false;
-    }, loadMs + fadeMs + holdMs2 + closeAnimMs);
+      setTimeout(function(){
+        intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
+        setTimeout(function(){
+          jumpTop(); measure(); updateCrawl();
+          started = false; closing = false;
+        }, closeAnimMs);
+      }, pauseMs);
+    }, contentMs);
   });
 
   if ('serviceWorker' in navigator) {
