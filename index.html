@@ -399,8 +399,16 @@
   }
   .sfx{
     text-align:center; font-family: var(--serif); font-size:13px;
-    letter-spacing:.24em; color: var(--blue-dim); margin: 36px 0;
+    letter-spacing:.24em; color: var(--ink-dim);
+    background: rgba(255,255,255,.045);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 20px 16px; margin: 36px 0;
   }
+  .sfx .an-en{
+    display:block; font-size:11.5px; letter-spacing:.14em; color: var(--blue);
+    margin-bottom:8px;
+  }
+  .sfx .an-jp{ display:block; font-size:12.5px; letter-spacing:.06em; color: var(--ink-dim); }
   .loadbreak{
     text-align:center; font-size:11px; letter-spacing:.28em; color: var(--blue-dim);
     margin: 48px 0; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -566,6 +574,11 @@
     <div class="msg mystery reveal">
       <div class="avatar">👤</div>
       <div class="content"><div class="name">？？？</div><div class="bubble">⍙⍺?<br>[⎔⊐⋛*⍕⍱⋚〨⌿⍮⍰⋙⌇⨂⊞⎎]⎓<br>⊐*⍌⍱⌇⋗〨⊚⋗⌇⊶⊞〨⨂⌑――</div></div>
+    </div>
+
+    <div class="sfx reveal">
+      <span class="an-en">《Judgment Analytical Calculation Operator》</span>
+      <span class="an-jp">（判断分析演算実行者）／ジャコ・システム起動――⚡️</span>
     </div>
 
     <figure class="imgframe reveal">
