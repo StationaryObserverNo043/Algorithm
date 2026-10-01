@@ -183,8 +183,12 @@
   .crawl-down{
     margin-top: 70px;
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
-    transition: opacity 1s ease, transform 1s ease;
   }
+  #scrollGate{
+    transform: translateY(26px);
+    transition: opacity 1.3s cubic-bezier(.22,1,.36,1), transform 1.3s cubic-bezier(.22,1,.36,1);
+  }
+  #scrollGate.in{ transform:none; }
 
   .btn{
     display:inline-flex; align-items:center; gap:9px;
@@ -903,56 +907,48 @@
   }
   function hideLoading(){ splash.classList.add('hide'); }
 
-  /* --- 旅をはじめる：表紙が開く → ほぼ直接、枠付きページ(Loading) →
-         Loading終了でじんわり枠が消えて無地に → 星がじんわり浮かぶ →
-         ボタンと導入文がじんわり出現 → スクロール可能に --- */
+  /* --- 旅をはじめる：表紙が開く → 無地ページの上でLoading →
+         Loading終了後、星がじんわり浮かぶ → ボタンと導入文がじんわり出現 → スクロール可能に
+         （枠付きページは挟まず、無地ページだけを行き来する） --- */
   var started = false;
   startBtn.addEventListener('click', function(){
     if (started) return; started = true;
     var openAnimMs = reduce ? 500 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
-    var flashInMs  = reduce ? 150 : 400;  /* 枠付きページが浮かぶ時間（短く＝ほぼ直接） */
-    var flashOutMs = reduce ? 200 : 1500; /* Loading終了後、枠がじんわり消える時間 */
-    var loadMs     = 1700;                /* 枠付きページの上にLoadingを重ねて見せる時間 */
+    var loadMs     = 1700;                /* 無地ページの上にLoadingを重ねて見せる時間 */
     var starLeadMs = reduce ? 150 : 700;  /* 星を少し見せてから、本文とボタンを出す */
     var contentMs  = reduce ? 200 : 1100; /* 本文・ボタンがじんわり出現する時間 */
 
-    intro.classList.add('opening'); /* 表紙が開く */
+    intro.classList.add('opening'); /* 表紙が開く。背面＝無地ページがそのまま現れる */
 
     setTimeout(function(){
-      flashEl.style.transitionDuration = flashInMs + 'ms';
-      flashEl.classList.add('show'); /* 表紙が開いたら、ほぼ直接 枠付きページへ */
-      showLoading(OPEN_MSG);         /* その上にLoadingを重ねる */
+      showLoading(OPEN_MSG); /* 無地ページの上にLoadingを重ねる */
     }, openAnimMs);
 
     setTimeout(function(){
       hideLoading();
-      flashEl.style.transitionDuration = flashOutMs + 'ms';
-      flashEl.classList.remove('show'); /* Loading終了と共に、枠がじんわり消えて無地に */
 
       /* 重い処理は、まだ本を閉じたまま（非表示）の間に済ませておく */
       jumpTop();
       measure(); updateCrawl(); initReveal();
 
-      setTimeout(function(){
-        requestAnimationFrame(function(){
-          root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
-          root.classList.remove('intro-lock'); /* main は opacity:0 が基準なので、ここではまだ見えない */
-          paperEl.classList.add('show');
-          intro.style.display = 'none';
-          starfieldEl.classList.add('show');   /* じんわりと星が浮かぶ */
+      requestAnimationFrame(function(){
+        root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
+        root.classList.remove('intro-lock'); /* main は opacity:0 が基準なので、ここではまだ見えない */
+        paperEl.classList.add('show');
+        intro.style.display = 'none';
+        starfieldEl.classList.add('show');   /* じんわりと星が浮かぶ */
 
-          setTimeout(function(){
-            requestAnimationFrame(function(){
-              root.classList.add('content-ready'); /* 本文（導入文）がじんわり出現 */
-              var gate = document.getElementById('scrollGate');
-              if (gate) gate.classList.add('in');   /* ボタンもじんわり出現 */
-              setTimeout(function(){
-                root.classList.remove('scroll-lock'); /* 本編スクロール可能に */
-              }, contentMs);
-            });
-          }, starLeadMs);
-        });
-      }, flashOutMs);
+        setTimeout(function(){
+          requestAnimationFrame(function(){
+            root.classList.add('content-ready'); /* 本文（導入文）がじんわり出現 */
+            var gate = document.getElementById('scrollGate');
+            if (gate) gate.classList.add('in');   /* ボタンもじんわり出現 */
+            setTimeout(function(){
+              root.classList.remove('scroll-lock'); /* 本編スクロール可能に */
+            }, contentMs);
+          });
+        }, starLeadMs);
+      });
     }, openAnimMs + loadMs);
   });
 
