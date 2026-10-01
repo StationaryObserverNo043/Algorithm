@@ -185,8 +185,8 @@
     font-size: 11px; letter-spacing:.18em; color: var(--ink-dim);
   }
   #scrollGate{
-    transform: translateY(26px);
-    transition: opacity 1.3s cubic-bezier(.22,1,.36,1), transform 1.3s cubic-bezier(.22,1,.36,1);
+    transform: translateY(32px);
+    transition: opacity 1.8s ease-in-out, transform 1.8s ease-in-out;
   }
   #scrollGate.in{ transform:none; }
 
@@ -203,7 +203,7 @@
   html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
   html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
   html.scroll-lock, html.scroll-lock body{ overflow:hidden; height:100%; }
-  main{ opacity:0; transition: opacity 1.1s ease; }
+  main{ opacity:0; transition: opacity 1.8s ease-in-out; }
   html.content-ready main{ opacity:1; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
   /* 表紙の下にある「最初のページ」 */
@@ -346,7 +346,7 @@
   /* ---------- starfield (subtle) ---------- */
   #starfield{
     position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
-    opacity:0; transition: opacity 2.2s ease;
+    opacity:0; transition: opacity 1.8s ease-in-out;
     background:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
@@ -916,7 +916,7 @@
     var openAnimMs = reduce ? 500 : 3400; /* 表紙が開く時間（.book-cover transitionと同じ） */
     var loadMs     = 1700;                /* 無地ページの上にLoadingを重ねて見せる時間 */
     var starLeadMs = reduce ? 150 : 700;  /* 星を少し見せてから、本文とボタンを出す */
-    var contentMs  = reduce ? 200 : 1100; /* 本文・ボタンがじんわり出現する時間 */
+    var contentMs  = reduce ? 200 : 1800; /* 本文・ボタンがじんわり出現する時間（星・無地と同じ速さ） */
 
     intro.classList.add('opening'); /* 表紙が開く。背面＝無地ページがそのまま現れる */
 
@@ -956,7 +956,7 @@
          その無地ページから直接、表紙が閉じる（枠付きページは挟まない） --- */
   document.getElementById('titleBtn').addEventListener('click', function(){
     if (!started || closing) return; closing = true;
-    var contentMs   = reduce ? 200 : 1700; /* 本文・ボタン・星が、もう少しじんわり消える時間 */
+    var contentMs   = reduce ? 200 : 1800; /* 本文・ボタン・星が、同じ速さでじんわり消える時間 */
     var pauseMs     = reduce ? 100 : 500;  /* 無地ページで少し間を置く */
     var closeAnimMs = reduce ? 500 : 3500; /* 表紙が閉じる時間 */
 
