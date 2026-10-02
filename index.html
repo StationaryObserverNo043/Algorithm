@@ -203,8 +203,8 @@
   html.intro-lock, html.intro-lock body{ overflow:hidden; height:100%; }
   html.intro-lock #topnav, html.intro-lock main{ visibility:hidden; }
   html.scroll-lock, html.scroll-lock body{ overflow:hidden; height:100%; }
-  main{ opacity:0; transition: opacity 1.8s ease-in-out; }
-  html.content-ready main{ opacity:1; }
+  main, #topnav{ opacity:0; transition: opacity 1.8s ease-in-out; }
+  html.content-ready main, html.content-ready #topnav{ opacity:1; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
   /* 表紙の下にある「最初のページ」 */
   .book-page{
