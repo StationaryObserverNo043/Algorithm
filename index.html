@@ -344,13 +344,18 @@
   #paperbg.show{ opacity: 1; }
 
   /* ---------- starfield (subtle) ---------- */
-  #starfield{
-    position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
-    opacity:0; transition: opacity 1.8s ease-in-out;
+  /* 色味の層は最初から常時表示（星の出現時に画面全体の色調が変わらないように分離） */
+  #skytint{
+    position:fixed; inset:0; pointer-events:none; z-index:-2;
     background:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
       linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%);
+  }
+  /* 星（点）だけをフェードさせる層。色調は含まないので、出現時に画面の色が変わらない */
+  #starfield{
+    position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1;
+    opacity:0; transition: opacity 1.8s ease-in-out;
   }
   #starfield.show{ opacity:1; }
   .star{
@@ -487,6 +492,7 @@
 <body>
 
 <div id="paperbg" aria-hidden="true"></div>
+<div id="skytint" aria-hidden="true"></div>
 <div id="starfield" aria-hidden="true"></div>
 
 <div id="splash" class="hide" aria-hidden="true">
