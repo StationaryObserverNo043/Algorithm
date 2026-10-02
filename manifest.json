@@ -1,6 +1,6 @@
 {
   "name": "ストーリーブック・アプリ｜銀河帝国アルゴリズムの侵略",
-  "short_name": "侵略ログ｜INV043",
+  "short_name": "観測ログ｜INV043",
   "description": "🚨🌏️地球侵略阻止ミッション👽️⚡️「銀河帝国アルゴリズムの侵略」観測ログを追体験するストーリーブックPWA。",
   "id": "/galactic-algorithm-invasion/",
   "start_url": "./index.html",
@@ -11,7 +11,11 @@
   "theme_color": "#0a1533",
   "lang": "ja",
   "dir": "ltr",
-  "categories": ["entertainment", "books", "lifestyle"],
+  "categories": [
+    "entertainment",
+    "books",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "icons/icon-192.png",
