@@ -240,7 +240,15 @@
     display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
     padding-bottom: calc(env(safe-area-inset-bottom,0px) + 60px);
     background: var(--void);
+    opacity:1; transition: opacity 1.8s ease 1.2s;
+    /* 1.2s遅らせてから1.8sかけて現れる：backface-visibility:hiddenのため表紙絵は
+       回転が約90度を過ぎるまでそもそも見えない。その見え始める頃に合わせてフェードを
+       開始させることで、回転後半の「パッと」感をやわらげる */
   }
+  /* 閉じる回転の間、表紙絵を一瞬だけ不透明度0にしておく（JSが付与）：
+     3D回転だけに頼ると、遠近感のせいで絵柄のはっきりした表紙面が回転後半で
+     一気に「パッと」視認できてしまうため、同時にじんわり不透明度を上げて視覚的な唐突さを和らげる */
+  .book-cover .front.pre-fade{ opacity:0; transition:none; }
   .book-cover .front::after{ /* 背表紙の陰影 */
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
@@ -778,7 +786,7 @@
     <div class="cat-label reveal"><span class="sq">■</span>MISSION ARCHIVE</div>
     <div class="log-title reveal">RETURN TRANSMISSION</div>
     <h2 class="reveal">続きの観測ログへ</h2>
-    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されている。</p>
+    <p class="reveal">この追体験の元になった観測ログは、マガジン「銀河帝国アルゴリズムの侵略」に集約されています。</p>
     <div class="btn-row reveal">
       <a class="btn" href="https://note.com/teabreak_invader/m/m83ded32beb7a" target="_blank" rel="noopener">マガジンを開く ↗</a>
     </div>
@@ -997,6 +1005,13 @@
       flashEl.classList.remove('show');
 
       setTimeout(function(){
+        var frontEl = intro.querySelector('.book-cover .front');
+        if (frontEl) {
+          frontEl.classList.add('pre-fade');  /* 表紙絵をいったん不透明度0に */
+          void frontEl.offsetWidth;           /* 強制リフロー */
+          frontEl.classList.remove('pre-fade'); /* ここからopacity 0→1（1.9s）が回転と並走し、
+                                                    回転後半の「パッと見える」感触を和らげる */
+        }
         intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
         setTimeout(function(){
           jumpTop(); measure(); updateCrawl();
