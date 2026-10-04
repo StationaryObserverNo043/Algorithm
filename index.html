@@ -208,10 +208,13 @@
   main, #topnav{ opacity:0; transition: opacity 1.8s ease-in-out; }
   html.content-ready main, html.content-ready #topnav{ opacity:1; }
   #bookintro{ position:fixed; inset:0; z-index:900; perspective:1800px; }
-  /* 表紙の下にある「最初のページ」（本編画面で常時表示されている#skytintの色味と完全に同じにしておくことで、
-     瞬時に表示/非表示が切り替わる際にも画面のトーンが変化して見えないようにする。
-     紙の質感（texture画像）はここには入れない：#paperbgが不透明度0から始まり後からじんわり重なってくるため、
-     ここに最初からtextureを焼き込むと「切り替わった瞬間だけ質感が消える」というズレが生まれてしまう） */
+  /* 表紙の下にある「最初のページ」。本編画面で常時表示されている#skytintの色味と、
+     #paperbgの紙質感(texture)を両方ここにも焼き込んでおくことで、無地ページの間も
+     本編と同じ「紙の質感」が途切れない。
+     #paperbgは不透明度0から始まり2.6sかけてフェードインするが、JS側でその開始を
+     表紙がまだ画面を覆っている間（無地ページ表示中）に前倒ししてあるため、表紙が
+     非表示に切り替わる瞬間には#paperbgは既にほぼ/完全にフェード済み＝質感が
+     「切り替わった瞬間だけ消える」というズレは起きない） */
   .book-page{
     position:absolute; inset:0;
     background-color:#0a1533;
@@ -219,10 +222,11 @@
       linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 8%),
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
-      linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%);
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-    background-size: cover, cover, cover, cover;
-    background-position: center, center, center, center;
+      linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%),
+      url('./images/11-paper-texture.jpg');
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    background-size: cover, cover, cover, cover, cover;
+    background-position: center, center, center, center, center;
   }
   /* 厚みのある表紙（前面・背面・小口をZ軸に積む） */
   .book-cover{
@@ -253,16 +257,17 @@
     content:""; position:absolute; top:0; bottom:0; left:0; width:16px; pointer-events:none;
     background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,0));
   }
-  .book-cover .back{ /* 表紙の裏＝最初のページと同じ無地の紙（textureを焼き込まない理由は.book-pageと同じ） */
+  .book-cover .back{ /* 表紙の裏＝最初のページと同じ無地の紙（texture込みで.book-pageと同じ理由） */
     transform: rotateY(180deg) translateZ(9px);
     background-color:#0a1533;
     background-image:
       radial-gradient(ellipse 80% 50% at 15% 0%, rgba(45,80,175,.38), transparent 62%),
       radial-gradient(ellipse 70% 45% at 95% 65%, rgba(80,70,165,.24), transparent 62%),
-      linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%);
-    background-size: cover, cover, cover;
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: center, center, center;
+      linear-gradient(180deg, rgba(11,23,56,.6) 0%, rgba(10,21,51,.6) 55%, rgba(8,16,41,.66) 100%),
+      url('./images/11-paper-texture.jpg');
+    background-size: cover, cover, cover, cover;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: center, center, center, center;
   }
   .book-cover .edge{ position:absolute; background: linear-gradient(90deg, #0a1636, #2b4085 50%, #0a1636); }
   .book-cover .edge.l{ top:0; bottom:0; left:-9px; width:18px; transform: rotateY(90deg); }
@@ -945,6 +950,11 @@
     var contentMs  = reduce ? 200 : 1800; /* 本文・ボタンがじんわり出現する時間（星・無地と同じ速さ） */
 
     intro.classList.add('opening'); /* 表紙が開く。背面＝無地ページがそのまま現れる */
+    paperEl.classList.add('show'); /* #paperbgの紙質感フェードインを、表紙がまだ覆っている
+      今のうちに前倒しで開始する（2.6s）。表紙に隠れている間に完了させておくことで、
+      表紙がdisplay:noneに切り替わる瞬間に質感が「まだ半分しか馴染んでいない」状態に
+      ならないようにする（無地ページ側にも同じtextureを焼き込んであるので、この間は
+      見た目の変化はない） */
 
     setTimeout(function(){
       showLoading(OPEN_MSG); /* 無地ページの上にLoadingを重ねる */
@@ -960,7 +970,6 @@
       requestAnimationFrame(function(){
         root.classList.add('scroll-lock');   /* 表示はするが、まだスクロールさせない */
         root.classList.remove('intro-lock'); /* main は opacity:0 が基準なので、ここではまだ見えない */
-        paperEl.classList.add('show');
         intro.style.display = 'none';
         starfieldEl.classList.add('show');   /* じんわりと星が浮かぶ */
 
@@ -1009,26 +1018,31 @@
         showLoading(CLOSE_MSG); /* 無地ページの上にLoadingを重ねる（開く時と対称） */
 
         setTimeout(function(){
-          hideLoading();
+          hideLoading(); /* Loadingがじんわり消える（splashのopacity 0.9s） */
 
-          var frontEl = intro.querySelector('.book-cover .front');
-          if (frontEl) {
-            frontEl.classList.add('pre-fade'); /* 表紙絵をいったん不透明度0に */
-            /* void el.offsetWidth による強制リフローは、直後に始まる3D回転と同じフレームで
-               レイアウト計算を強制してしまい、回転開始の一瞬がカクつく原因になるため使わない。
-               rAFを二重に挟むことで、ブロックせずに「一度描画された後」にフェードを開始する */
-            requestAnimationFrame(function(){
-              requestAnimationFrame(function(){
-                frontEl.classList.remove('pre-fade'); /* ここからopacity 0→1（1.9s）が回転と並走し、
-                                                           回転後半の「パッと見える」感触を和らげる */
-              });
-            });
-          }
-          intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
+          var settleMs = reduce ? 80 : 650; /* Loadingが完全に消えて無地ページに戻るまで、
+            一呼吸置く。ここを置かずに表紙の回転を始めると、Loadingのフェードアウトと
+            回転が同時に始まってしまい、「画面全体がじんわり切り替わる」間が感じられなくなる */
           setTimeout(function(){
-            jumpTop(); measure(); updateCrawl();
-            started = false; closing = false;
-          }, closeAnimMs);
+            var frontEl = intro.querySelector('.book-cover .front');
+            if (frontEl) {
+              frontEl.classList.add('pre-fade'); /* 表紙絵をいったん不透明度0に */
+              /* void el.offsetWidth による強制リフローは、直後に始まる3D回転と同じフレームで
+                 レイアウト計算を強制してしまい、回転開始の一瞬がカクつく原因になるため使わない。
+                 rAFを二重に挟むことで、ブロックせずに「一度描画された後」にフェードを開始する */
+              requestAnimationFrame(function(){
+                requestAnimationFrame(function(){
+                  frontEl.classList.remove('pre-fade'); /* ここからopacity 0→1（1.9s）が回転と並走し、
+                                                             回転後半の「パッと見える」感触を和らげる */
+                });
+              });
+            }
+            intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
+            setTimeout(function(){
+              jumpTop(); measure(); updateCrawl();
+              started = false; closing = false;
+            }, closeAnimMs);
+          }, settleMs);
         }, loadMs);
       }, pauseMs);
     }, contentMs);
