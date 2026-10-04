@@ -920,7 +920,7 @@
   var closing = false;
   var splashTitleEl = splash.querySelector('.splash-title');
   var OPEN_MSG = splashTitleEl.textContent;
-  var CLOSE_MSG = '《0.003sec》自分らしさ、観測中……';
+  var CLOSE_MSG = '《0.003sec》自分らしさは、あなたの中に……';
   var paperEl = document.getElementById('paperbg');
   var starfieldEl = document.getElementById('starfield');
   var flashEl = document.getElementById('endpaperFlash');
@@ -984,6 +984,7 @@
     if (!started || closing) return; closing = true;
     var contentMs   = reduce ? 200 : 1800; /* 本文・ボタン・星が、同じ速さでじんわり消える時間 */
     var pauseMs     = reduce ? 100 : 500;  /* 無地ページで少し間を置く */
+    var loadMs      = 1700;                /* 無地ページの上にLoadingを重ねて見せる時間（開く時と対称） */
     var closeAnimMs = reduce ? 500 : 3500; /* 表紙が閉じる時間 */
 
     var gateReset = document.getElementById('scrollGate');
@@ -1005,18 +1006,30 @@
       flashEl.classList.remove('show');
 
       setTimeout(function(){
-        var frontEl = intro.querySelector('.book-cover .front');
-        if (frontEl) {
-          frontEl.classList.add('pre-fade');  /* 表紙絵をいったん不透明度0に */
-          void frontEl.offsetWidth;           /* 強制リフロー */
-          frontEl.classList.remove('pre-fade'); /* ここからopacity 0→1（1.9s）が回転と並走し、
-                                                    回転後半の「パッと見える」感触を和らげる */
-        }
-        intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
+        showLoading(CLOSE_MSG); /* 無地ページの上にLoadingを重ねる（開く時と対称） */
+
         setTimeout(function(){
-          jumpTop(); measure(); updateCrawl();
-          started = false; closing = false;
-        }, closeAnimMs);
+          hideLoading();
+
+          var frontEl = intro.querySelector('.book-cover .front');
+          if (frontEl) {
+            frontEl.classList.add('pre-fade'); /* 表紙絵をいったん不透明度0に */
+            /* void el.offsetWidth による強制リフローは、直後に始まる3D回転と同じフレームで
+               レイアウト計算を強制してしまい、回転開始の一瞬がカクつく原因になるため使わない。
+               rAFを二重に挟むことで、ブロックせずに「一度描画された後」にフェードを開始する */
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){
+                frontEl.classList.remove('pre-fade'); /* ここからopacity 0→1（1.9s）が回転と並走し、
+                                                           回転後半の「パッと見える」感触を和らげる */
+              });
+            });
+          }
+          intro.classList.remove('opening'); /* 無地ページのまま、表紙が閉じる */
+          setTimeout(function(){
+            jumpTop(); measure(); updateCrawl();
+            started = false; closing = false;
+          }, closeAnimMs);
+        }, loadMs);
       }, pauseMs);
     }, contentMs);
   });
